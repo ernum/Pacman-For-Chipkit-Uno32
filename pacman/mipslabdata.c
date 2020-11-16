@@ -162,9 +162,9 @@ const uint8_t const icon[] = {
 
 /* The score_board on the right of the screen.
    There are 16 columns. Each number in the array is
-   an a byte (8 bits). Each column is of length 32, so 4 numbers
-   are used to describe each column. Update this accordingly 
-   for scores and lives. */
+   a byte (8 bits). Each column is of length 32, so 4 numbers
+   are used to describe each column (vertically represented). 
+   Update this accordingly for scores and lives. */
 const uint8_t const score_background[] = {
 	255, 255, 64, 64, 95, 80, 80, 64, 
 	255, 64, 83, 85, 89, 64, 64, 255, 
