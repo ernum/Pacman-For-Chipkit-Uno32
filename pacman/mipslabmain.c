@@ -57,12 +57,14 @@ int main(void)
 	/* SPI2CON bit ON = 1; */
 	SPI2CONSET = 0x8000;
 
-	
-
 	display_init();
-	show_score_and_lives();
+
+	clear_screen(); /* Clears the screen before doing anything else */
+	display_update();
 	
-	update_score();
+	show_score_and_lives(); /* Add score to display */
+
+	increment_score(); // Not implemented yet
 
 	labinit(); /* Do any lab-specific initialization */
 

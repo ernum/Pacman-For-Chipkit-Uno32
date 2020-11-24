@@ -99,6 +99,24 @@ void display_debug(volatile int *const addr)
   display_update();
 }
 
+void display_string(int line, char *s)
+{
+  int i;
+  if (line < 0 || line >= 4)
+    return;
+  if (!s)
+    return;
+
+  for (i = 0; i < 16; i++)
+    if (*s)
+    {
+      textbuffer[line][i] = *s;
+      s++;
+    }
+    else
+      textbuffer[line][i] = ' ';
+}
+
 uint8_t spi_send_recv(uint8_t data)
 {
   while (!(SPI2STAT & 0x08));
@@ -138,32 +156,6 @@ void display_init(void)
   spi_send_recv(0xAF);
 }
 
-void display_string(int line, char *s)
-{
-  int i;
-  if (line < 0 || line >= 4)
-    return;
-  if (!s)
-    return;
-
-  for (i = 0; i < 16; i++)
-    if (*s)
-    {
-      textbuffer[line][i] = *s;
-      s++;
-    }
-    else
-      textbuffer[line][i] = ' ';
-}
-
-/*  Increment integer in arrays 
-    to then display on chipkit. 
-*/ 
-void evaluate_integer_array(int *score) 
-{
-  // Not done yet
-}
-
 void display_score(int x, const uint8_t *data)
 {
   int i, j;
@@ -186,14 +178,30 @@ void display_score(int x, const uint8_t *data)
   }
 }
 
+void clear_screen()
+{
+  int i, j;
+  for (i = 0; i < 4; i++)
+  {
+    for (j = 0; j < 16; j++)
+    {
+      textbuffer[i][j] = 0;
+    }
+  }
+
+}
+
 void show_score_and_lives() 
 {
   display_score(112, score_background);
 }
 
-void update_score()
+/*  Increment integer in arrays 
+    to then display on chipkit. 
+*/ 
+void increment_score() 
 {
-  
+  // Not done yet
 }
 
 void display_update(void)
