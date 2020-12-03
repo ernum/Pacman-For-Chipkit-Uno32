@@ -156,6 +156,90 @@ void display_init(void)
   spi_send_recv(0xAF);
 }
 
+/* Function for matrix conversion */
+void int_to_bin_digit(unsigned int in, int count, int *out)
+{
+    /* assert: count <= sizeof(int)*CHAR_BIT */
+    unsigned int mask = 1U << (count-1);
+    int i;
+    for (i = 0; i < count; i++) {
+        out[i] = (in & mask) ? 1 : 0;
+        in <<= 1;
+    }
+}
+
+int bin_to_int_decimal(int *in, int bits)
+{
+    int i, n, sum = 0;
+    for (i = 0; i < bits; i++) {
+        n = *(in + i);
+        sum += (n * (1 << (bits - (i + 1))));
+    }
+    return sum;
+}
+
+void revereseArray(int arr[], int start, int end)
+{
+    int temp;
+    while (start < end)
+    {
+        temp = arr[start];   
+        arr[start] = arr[end];
+        arr[end] = temp;
+        start++;
+        end--;
+    }   
+}    
+
+int get_matrix_value(int matrix[128][32], int column, int start) {
+    int num;
+    int temp[8];
+    for (int i = 0; i < 8; i++) {
+        temp[7 - i] = matrix[column][start + i];
+    }
+    num = bin_to_int_decimal(temp, 8);
+    return num;
+
+}
+
+void convert_array_to_matrix(int array[512], int matrix[128][32]) {
+    int row, column;
+    for (column=0; column<128; column++)
+    {
+        int board_pointer = column;
+        int byte[8];
+        int current_row = 0;
+        int_to_bin_digit(array[board_pointer], 8, byte);
+        revereseArray(byte, 0, 7);
+
+        for(row=0; row<32; row++)
+        {
+            matrix[column][row] = byte[current_row];
+            current_row++;
+
+            if ((row % 8) == 7) {
+                /* printf("%d ", array[board_pointer]); */
+                board_pointer += 128;
+                current_row = 0;
+                int_to_bin_digit(array[board_pointer], 8, byte);
+                revereseArray(byte, 0, 7);
+            }
+        }
+    }
+}
+
+void convert_matrix_to_array(int matrix[128][32], int array[512]) {
+    int position = -8;
+    for (int i = 0; i<512; i++)
+    {
+        if (i % 128 == 0) {
+            position += 8;
+        }
+        array[i] = get_matrix_value(matrix, i % 128, position);
+    }
+}
+
+
 void display_score(int x, const uint8_t *data)
 {
   int i, j;
