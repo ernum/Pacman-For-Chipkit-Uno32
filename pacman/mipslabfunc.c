@@ -172,10 +172,29 @@ void display_score(int x, const uint8_t *data)
 
     DISPLAY_CHANGE_TO_DATA_MODE;
 
-    // 16 for the amount of columns used to represent the score and lives.
-    for (j = 0; j < 16; j++) 
-      spi_send_recv(~data[i * 16 + j]);
+    // 12 for the amount of columns used to represent the score and lives.
+    for (j = 0; j < 12; j++)
+      spi_send_recv(~data[i * 12 + j]);
   }
+}
+
+void display_board(int x, const uint8_t *data)
+{
+    int i, j;
+
+  	for(i = 0; i < 4; i++) {
+  		DISPLAY_CHANGE_TO_COMMAND_MODE;
+  		spi_send_recv(0x22);
+  		spi_send_recv(i);
+
+  		spi_send_recv(x & 0xF);
+  		spi_send_recv(0x10 | ((x >> 4) & 0xF));
+
+  		DISPLAY_CHANGE_TO_DATA_MODE;
+
+  		for(j = 0; j < 128; j++)
+  			spi_send_recv(~data[i*128 + j]);
+  	}
 }
 
 void clear_screen()
@@ -191,15 +210,16 @@ void clear_screen()
 
 }
 
-void show_score_and_lives() 
+void show_score_and_lives()
 {
-  display_score(112, score_background);
+  /*display_score(116, score_background);*/
+  display_board(0, board);
 }
 
-/*  Increment integer in arrays 
-    to then display on chipkit. 
-*/ 
-void increment_score() 
+/*  Increment integer in arrays
+    to then display on chipkit.
+*/
+void increment_score()
 {
   // Not done yet
 }
@@ -242,43 +262,43 @@ static void num32asc(char *s, int n)
 
 /*
  * itoa
- * 
+ *
  * Simple conversion routine
  * Converts binary to decimal numbers
  * Returns pointer to (static) char array
- * 
+ *
  * The integer argument is converted to a string
  * of digits representing the integer in decimal format.
  * The integer is considered signed, and a minus-sign
  * precedes the string of digits if the number is
  * negative.
- * 
+ *
  * This routine will return a varying number of digits, from
  * one digit (for integers in the range 0 through 9) and up to
  * 10 digits and a leading minus-sign (for the largest negative
  * 32-bit integers).
- * 
+ *
  * If the integer has the special value
  * 100000...0 (that's 31 zeros), the number cannot be
  * negated. We check for this, and treat this as a special case.
  * If the integer has any other value, the sign is saved separately.
- * 
+ *
  * If the integer is negative, it is then converted to
  * its positive counterpart. We then use the positive
  * absolute value for conversion.
- * 
+ *
  * Conversion produces the least-significant digits first,
  * which is the reverse of the order in which we wish to
  * print the digits. We therefore store all digits in a buffer,
  * in ASCII form.
- * 
+ *
  * To avoid a separate step for reversing the contents of the buffer,
  * the buffer is initialized with an end-of-string marker at the
  * very end of the buffer. The digits produced by conversion are then
  * stored right-to-left in the buffer: starting with the position
  * immediately before the end-of-string marker and proceeding towards
  * the beginning of the buffer.
- * 
+ *
  * For this to work, the buffer size must of course be big enough
  * to hold the decimal representation of the largest possible integer,
  * and the minus sign, and the trailing end-of-string marker.

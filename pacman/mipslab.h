@@ -40,7 +40,9 @@ extern const uint8_t const font[128 * 8];
 /* Declare bitmap array containing icon */
 extern const uint8_t const icon[128];
 /* Declar background for score "area" */
-extern const uint8_t const score_background[64];
+extern const uint8_t const score_background[384];
+/* Declare bitmap containing a game board */
+extern const uint8_t const board[128*9];
 /* Declare text buffer for display output */
 extern char textbuffer[4][16];
 
