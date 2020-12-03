@@ -42,9 +42,13 @@ extern const uint8_t const icon[128];
 /* Declar background for score "area" */
 extern const uint8_t const score_background[384];
 /* Declare bitmap containing a game board */
-extern const uint8_t const board[128*9];
+extern const uint8_t const board[512];
 /* Declare text buffer for display output */
 extern char textbuffer[4][16];
+
+extern uint8_t final_matrix[128][32];
+
+extern uint8_t temp[512];
 
 /* Declare functions written by students.
    Note: Since we declare these functions here,

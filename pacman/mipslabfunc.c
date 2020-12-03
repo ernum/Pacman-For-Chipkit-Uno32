@@ -157,7 +157,7 @@ void display_init(void)
 }
 
 /* Function for matrix conversion */
-void int_to_bin_digit(unsigned int in, int count, int *out)
+void int_to_bin_digit(unsigned int in, int count, uint8_t *out)
 {
     /* assert: count <= sizeof(int)*CHAR_BIT */
     unsigned int mask = 1U << (count-1);
@@ -168,9 +168,10 @@ void int_to_bin_digit(unsigned int in, int count, int *out)
     }
 }
 
-int bin_to_int_decimal(int *in, int bits)
+int bin_to_int_decimal(uint8_t *in, int bits)
 {
-    int i, n, sum = 0;
+    int i, n;
+    uint8_t sum = 0;
     for (i = 0; i < bits; i++) {
         n = *(in + i);
         sum += (n * (1 << (bits - (i + 1))));
@@ -178,7 +179,7 @@ int bin_to_int_decimal(int *in, int bits)
     return sum;
 }
 
-void revereseArray(int arr[], int start, int end)
+void revereseArray(uint8_t arr[], int start, int end)
 {
     int temp;
     while (start < end)
@@ -191,10 +192,11 @@ void revereseArray(int arr[], int start, int end)
     }   
 }    
 
-int get_matrix_value(int matrix[128][32], int column, int start) {
-    int num;
-    int temp[8];
-    for (int i = 0; i < 8; i++) {
+int get_matrix_value(uint8_t matrix[128][32], int column, int start) {
+    uint8_t num;
+    uint8_t temp[8];
+    int i;
+    for (i = 0; i < 8; i++) {
         temp[7 - i] = matrix[column][start + i];
     }
     num = bin_to_int_decimal(temp, 8);
@@ -202,12 +204,12 @@ int get_matrix_value(int matrix[128][32], int column, int start) {
 
 }
 
-void convert_array_to_matrix(int array[512], int matrix[128][32]) {
+void convert_array_to_matrix(uint8_t array[512], uint8_t matrix[128][32]) {
     int row, column;
     for (column=0; column<128; column++)
     {
         int board_pointer = column;
-        int byte[8];
+        uint8_t byte[8];
         int current_row = 0;
         int_to_bin_digit(array[board_pointer], 8, byte);
         revereseArray(byte, 0, 7);
@@ -228,9 +230,10 @@ void convert_array_to_matrix(int array[512], int matrix[128][32]) {
     }
 }
 
-void convert_matrix_to_array(int matrix[128][32], int array[512]) {
+void convert_matrix_to_array(uint8_t matrix[128][32], uint8_t array[512]) {
     int position = -8;
-    for (int i = 0; i<512; i++)
+    int i;
+    for (i = 0; i<512; i++)
     {
         if (i % 128 == 0) {
             position += 8;
@@ -296,8 +299,20 @@ void clear_screen()
 
 void show_score_and_lives()
 {
-  /*display_score(116, score_background);*/
-  display_board(0, board);
+  convert_array_to_matrix((uint8_t*)board, final_matrix);
+  final_matrix[127][0] = 0;
+  final_matrix[126][0] = 0;
+  final_matrix[125][0] = 0;
+  final_matrix[124][0] = 0;
+  final_matrix[123][0] = 0;
+  final_matrix[122][0] = 0;
+  final_matrix[121][0] = 0;
+  final_matrix[120][0] = 0;
+  final_matrix[119][0] = 0;
+  final_matrix[118][0] = 0;
+  convert_matrix_to_array(final_matrix, temp);
+  display_board(0, temp);
+
 }
 
 /*  Increment integer in arrays
