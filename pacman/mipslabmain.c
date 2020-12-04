@@ -62,9 +62,21 @@ int main(void)
 	clear_screen(); /* Clears the screen before doing anything else */
 	display_update();
 
-	Pacman pacman;
+	extern Character pacman;
 	pacman.x_pos = 5;
 	pacman.y_pos = 13;
+	extern Character blinky;
+	blinky.x_pos = 88;
+	blinky.y_pos = 7;
+	extern Character inky;
+	inky.x_pos = 87;
+	inky.y_pos = 14;
+	extern Character clyde;
+	clyde.x_pos = 93;
+	clyde.y_pos = 14;
+	extern Character pinky;
+	pinky.x_pos = 81;
+	pinky.y_pos = 14;
 	show_score_and_lives(0); /* Add score to display */
 	reset_score();
 

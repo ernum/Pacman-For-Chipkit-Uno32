@@ -53,14 +53,19 @@ extern uint8_t final_matrix[128][32];
 extern uint8_t temp[512];
 
 
-extern int pacman_open[5][5];
-
+extern int pacman_open_right[5][5];
+extern int pacman_open_left[5][5];
 extern int pacman_close[5][5];
+
+extern int ghost_blinky[5][5];
+extern int ghost_inky[5][5];
+extern int ghost_clyde[5][5];
+extern int ghost_pinky[5][5];
 
 typedef struct {
     int x_pos;
     int y_pos;
-}Pacman;
+}Character;
 /* Numbers */
 extern const uint8_t const all_nums[10][5][3];
 

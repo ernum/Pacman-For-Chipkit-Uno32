@@ -25,7 +25,11 @@ static void num32asc(char *s, int);
 #define DISPLAY_TURN_OFF_VBAT (PORTFSET = 0x20)
 
 
-Pacman pacman;
+Character pacman;
+Character blinky;
+Character inky;
+Character clyde;
+Character pinky;
 
 /* quicksleep:
    A simple function to create a small delay.
@@ -312,14 +316,17 @@ void move(uint8_t matrix[128][32]) {
           else if (pacman.x_pos > 111) {
               pacman.x_pos = 0;
           }
-          final_matrix[pacman.x_pos + i][pacman.y_pos + j] = pacman_open[j][i];
-
+          final_matrix[pacman.x_pos + i][pacman.y_pos + j] = pacman_open_right[j][i];
+          final_matrix[blinky.x_pos + i][blinky.y_pos + j] = ghost_blinky[j][i];
+          final_matrix[inky.x_pos + i][inky.y_pos + j] = ghost_inky[j][i];
+          final_matrix[clyde.x_pos + i][clyde.y_pos + j] = ghost_clyde[j][i];
+          final_matrix[pinky.x_pos + i][pinky.y_pos + j] = ghost_pinky[j][i];
       }
     }
 }
 
 
-void pacman_add(int dir, uint8_t matrix[128][32]){
+void characters_add(int dir, uint8_t matrix[128][32]){
     if (dir == 2 && final_matrix[pacman.x_pos][pacman.y_pos + 5] != 1 && pacman.y_pos < 31
             && final_matrix[pacman.x_pos + 1][pacman.y_pos + 5] != 1
             && final_matrix[pacman.x_pos + 2][pacman.y_pos + 5] != 1
@@ -365,7 +372,7 @@ void pacman_add(int dir, uint8_t matrix[128][32]){
 void show_score_and_lives(int dir)
 {
     convert_array_to_matrix((uint8_t*)board, final_matrix);
-    pacman_add(dir, final_matrix);
+    characters_add(dir, final_matrix);
     convert_matrix_to_array(final_matrix, temp);
     display_board(0, temp);
 }
