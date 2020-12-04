@@ -184,13 +184,13 @@ void revereseArray(uint8_t arr[], int start, int end)
     int temp;
     while (start < end)
     {
-        temp = arr[start];   
+        temp = arr[start];
         arr[start] = arr[end];
         arr[end] = temp;
         start++;
         end--;
-    }   
-}    
+    }
+}
 
 int get_matrix_value(uint8_t matrix[128][32], int column, int start) {
     uint8_t num;
@@ -299,20 +299,24 @@ void clear_screen()
 
 void show_score_and_lives()
 {
-  convert_array_to_matrix((uint8_t*)board, final_matrix);
-  final_matrix[127][0] = 0;
-  final_matrix[126][0] = 0;
-  final_matrix[125][0] = 0;
-  final_matrix[124][0] = 0;
-  final_matrix[123][0] = 0;
-  final_matrix[122][0] = 0;
-  final_matrix[121][0] = 0;
-  final_matrix[120][0] = 0;
-  final_matrix[119][0] = 0;
-  final_matrix[118][0] = 0;
-  convert_matrix_to_array(final_matrix, temp);
-  display_board(0, temp);
-
+    convert_array_to_matrix((uint8_t*)board, final_matrix);
+    uint8_t pacman [5][5] = {
+          0,1,1,1,0,
+          1,1,1,1,1,
+          1,0,0,0,0,
+          1,1,1,1,1,
+          0,1,1,1,0,
+      };
+      int xpos = 5;
+      int ypos = 13;
+      int i,j;
+      for(i = 0; i < 5; i++) {
+          for(j = 0; j < 5; j++) {
+              final_matrix[xpos + i][ypos + j] = pacman[j][i]; // matrix is flipped on its axis
+          }
+      }
+    convert_matrix_to_array(final_matrix, temp);
+    display_board(0, temp);
 }
 
 /*  Increment integer in arrays
