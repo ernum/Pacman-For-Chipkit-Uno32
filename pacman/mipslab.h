@@ -50,6 +50,10 @@ extern uint8_t final_matrix[128][32];
 
 extern uint8_t temp[512];
 
+/* Numbers */
+extern const uint8_t const all_nums[10][5][3];
+
+
 /* Declare functions written by students.
    Note: Since we declare these functions here,
    students must define their functions with the exact types

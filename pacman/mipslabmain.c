@@ -63,13 +63,15 @@ int main(void)
 	display_update();
 	
 	show_score_and_lives(); /* Add score to display */
+	reset_score();
 
-	increment_score(); // Not implemented yet
+	int score[4] = {0, 0, 0, 0};
 
 	labinit(); /* Do any lab-specific initialization */
 
 	while (1)
 	{
+		increment_score(score);
 		labwork(); /* Do lab-specific things again and again */
 	}
 	return 0;

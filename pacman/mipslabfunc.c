@@ -319,13 +319,69 @@ void show_score_and_lives()
     display_board(0, temp);
 }
 
+void update_score(int score[4]) {
+  convert_array_to_matrix((uint8_t*)temp, final_matrix);
+
+  int ypos[4] = {8, 14, 20, 26};
+  int i,j, digit;
+
+  for (digit = 0; digit < 4; digit++) {
+    for(i = 0; i < 3; i++) {
+      for(j = 0; j < 5; j++) {
+          final_matrix[124 + i][ypos[digit] + j] = all_nums[score[digit]][j][i]; // matrix is flipped on its axis
+      }
+    }
+  }
+
+  convert_matrix_to_array(final_matrix, temp);
+  display_board(0, temp); 
+}
+
 /*  Increment integer in arrays
     to then display on chipkit.
 */
-void increment_score()
-{
-  // Not done yet
+void increment_score(int score[4]) {
+  score[0]++;
+  if (score[0] > 9) {
+      score[0] = 0;
+      score[1]++;
+
+      if (score[1] > 9) {
+            score[1] = 0;
+            score[2]++;
+
+            if (score[2] > 9) {
+                score[2] = 0;
+                score[3]++;
+
+                if (score[3] > 9) {
+                    score[3] = 0;
+                }
+            }
+      }
+  }
+  update_score(score);
 }
+
+void reset_score()
+{
+  convert_array_to_matrix((uint8_t*)temp, final_matrix);
+
+  int ypos[4] = {8, 14, 20, 26};
+  int i,j, digit;
+
+  for (digit = 0; digit < 4; digit++) {
+    for(i = 0; i < 3; i++) {
+      for(j = 0; j < 5; j++) {
+          final_matrix[124 + i][ypos[digit] + j] = all_nums[0][j][i]; // matrix is flipped on its axis
+      }
+    }
+  }
+
+  convert_matrix_to_array(final_matrix, temp);
+  display_board(0, temp);
+}
+
 
 void display_update(void)
 {
