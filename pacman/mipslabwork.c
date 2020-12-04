@@ -31,26 +31,40 @@ int getbtns(void){
 }
 
 void btnpress(){
-    int x_pos = 5;
-    int y_pos = 13;
-    while (1) {
+    // while (1) {
+    //     // Btn1. Down
+    //     if ((PORTF >> 1) & 0x1 != 0) {
+    //        show_score_and_lives(2);
+    //     }
+    //     // Btn2. Up
+    //     if ((PORTD >> 5) & 0x7 != 0) {
+    //        show_score_and_lives(8);
+    //     }
+    //     // Btn3. Right
+    //     if ((PORTD >> 6) & 0x3 != 0) {
+    //        show_score_and_lives(6);
+    //     }
+    //     // Btn4. Left
+    //     if ((PORTD >> 7) & 0x1 != 0) {
+    //        show_score_and_lives(4);
+    //     }
+    // }
+    //  Btn1. Down
         if ((PORTF >> 1) & 0x1 != 0) {
-            y_pos ++;
-           show_score_and_lives(x_pos, y_pos);
+           show_score_and_lives(2);
         }
+        // Btn2. Up
         if ((PORTD >> 5) & 0x7 != 0) {
-            y_pos --;
-           show_score_and_lives(x_pos, y_pos);
+           show_score_and_lives(8);
         }
+        // Btn3. Right
         if ((PORTD >> 6) & 0x3 != 0) {
-            x_pos ++;
-           show_score_and_lives(x_pos, y_pos);
+           show_score_and_lives(6);
         }
+        // Btn4. Left
         if ((PORTD >> 7) & 0x1 != 0) {
-            x_pos --;
-           show_score_and_lives(x_pos, y_pos);
+           show_score_and_lives(4);
         }
-    }
 }
 
 /* Lab-specific initialization goes here */
@@ -64,6 +78,5 @@ void labinit( void )
 /* This function is called repetitively from the main program */
 void labwork( void )
 {
-  delay(100);
   btnpress();
 }

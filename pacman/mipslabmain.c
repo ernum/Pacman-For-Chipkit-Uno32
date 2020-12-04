@@ -62,8 +62,10 @@ int main(void)
 	clear_screen(); /* Clears the screen before doing anything else */
 	display_update();
 
-
-	show_score_and_lives(5, 13); /* Add score to display */
+	Pacman pacman;
+	pacman.x_pos = 5;
+	pacman.y_pos = 13;
+	show_score_and_lives(0); /* Add score to display */
 	reset_score();
 
 	int score[4] = {0, 0, 0, 0};

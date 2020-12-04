@@ -20,7 +20,8 @@ void labwork(void);
 int nextprime(int inval);
 void quicksleep(int cyc);
 void tick(unsigned int *timep);
-void show_score_and_lives(int x_pos, int y_pos);
+
+void show_score_and_lives(int dir);
 
 /* Declare display_debug - a function to help debugging.
 
@@ -53,10 +54,15 @@ extern uint8_t temp[512];
 
 
 extern int pacman_open[5][5];
+
+extern int pacman_close[5][5];
+
+typedef struct {
+    int x_pos;
+    int y_pos;
+}Pacman;
 /* Numbers */
 extern const uint8_t const all_nums[10][5][3];
-
-
 
 /* Declare functions written by students.
    Note: Since we declare these functions here,

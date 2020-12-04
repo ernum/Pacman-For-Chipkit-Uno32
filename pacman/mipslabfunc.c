@@ -7,6 +7,7 @@
 #include <stdint.h>  /* Declarations of uint_32 and the like */
 #include <pic32mx.h> /* Declarations of system-specific addresses etc */
 #include "mipslab.h" /* Declatations for these labs */
+#include <string.h>
 
 /* Declare a helper function which is local to this file */
 static void num32asc(char *s, int);
@@ -23,6 +24,8 @@ static void num32asc(char *s, int);
 #define DISPLAY_TURN_OFF_VDD (PORTFSET = 0x40)
 #define DISPLAY_TURN_OFF_VBAT (PORTFSET = 0x20)
 
+
+Pacman pacman;
 
 /* quicksleep:
    A simple function to create a small delay.
@@ -298,25 +301,67 @@ void clear_screen()
 
 }
 
-void pacman_start(int x_pos, int y_pos, uint8_t matrix[128][32]){
+
+void move(uint8_t matrix[128][32]) {
     int i,j;
     for(i = 0; i < 5; i++) {
       for(j = 0; j < 5; j++) {
-          final_matrix[x_pos + i][y_pos + j] = pacman_open[j][i]; // matrix is flipped on its axis
+          final_matrix[pacman.x_pos + i][pacman.y_pos + j] = pacman_open[j][i]; // matrix is flipped on its axis
       }
     }
 }
 
-void show_score_and_lives(int x_pos, int y_pos)
+
+void pacman_add(int dir, uint8_t matrix[128][32]){
+    if (dir == 2 && final_matrix[pacman.x_pos][pacman.y_pos + 5] != 1 && pacman.y_pos < 31
+            && final_matrix[pacman.x_pos + 1][pacman.y_pos + 5] != 1
+            && final_matrix[pacman.x_pos + 2][pacman.y_pos + 5] != 1
+            && final_matrix[pacman.x_pos + 3][pacman.y_pos + 5] != 1
+            && final_matrix[pacman.x_pos + 4][pacman.y_pos + 5] != 1) {
+        move(final_matrix);
+        pacman.y_pos ++;
+    }
+    else if (dir == 8 && final_matrix[pacman.x_pos][pacman.y_pos - 1] != 1 && pacman.y_pos > 0
+            && final_matrix[pacman.x_pos + 1][pacman.y_pos - 1] != 1
+            && final_matrix[pacman.x_pos + 2][pacman.y_pos - 1] != 1
+            && final_matrix[pacman.x_pos + 3][pacman.y_pos - 1] != 1
+            && final_matrix[pacman.x_pos + 4][pacman.y_pos - 1] != 1) {
+        move(final_matrix);
+        pacman.y_pos --;
+    }
+    else if (dir == 6 && final_matrix[pacman.x_pos + 5][pacman.y_pos] != 1
+            && final_matrix[pacman.x_pos + 5][pacman.y_pos + 1] != 1
+            && final_matrix[pacman.x_pos + 5][pacman.y_pos + 2] != 1
+            && final_matrix[pacman.x_pos + 5][pacman.y_pos + 3] != 1
+            && final_matrix[pacman.x_pos + 5][pacman.y_pos + 4] != 1) {
+        move(final_matrix);
+        pacman.x_pos ++;
+    }
+    else if (dir == 4 && final_matrix[pacman.x_pos - 1][pacman.y_pos] != 1
+            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 1] != 1
+            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 2] != 1
+            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 3] != 1
+            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 4] != 1) {
+        move(final_matrix);
+        pacman.x_pos --;
+    }
+    else if (dir == 0) {
+        pacman.x_pos = 5;
+        pacman.y_pos = 13;
+        move(final_matrix);
+    }
+    else {
+        move(final_matrix);
+    }
+}
+
+void show_score_and_lives(int dir)
 {
     convert_array_to_matrix((uint8_t*)board, final_matrix);
-
-    pacman_start(x_pos, y_pos, final_matrix);
-
+    pacman_add(dir, final_matrix);
     convert_matrix_to_array(final_matrix, temp);
     display_board(0, temp);
 }
-
 
 void update_score(int score[4]) {
   convert_array_to_matrix((uint8_t*)temp, final_matrix);
