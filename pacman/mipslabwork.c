@@ -31,25 +31,7 @@ int getbtns(void){
 }
 
 void btnpress(){
-    // while (1) {
-    //     // Btn1. Down
-    //     if ((PORTF >> 1) & 0x1 != 0) {
-    //        show_score_and_lives(2);
-    //     }
-    //     // Btn2. Up
-    //     if ((PORTD >> 5) & 0x7 != 0) {
-    //        show_score_and_lives(8);
-    //     }
-    //     // Btn3. Right
-    //     if ((PORTD >> 6) & 0x3 != 0) {
-    //        show_score_and_lives(6);
-    //     }
-    //     // Btn4. Left
-    //     if ((PORTD >> 7) & 0x1 != 0) {
-    //        show_score_and_lives(4);
-    //     }
-    // }
-    //  Btn1. Down
+        // Btn1. Down
         if ((PORTF >> 1) & 0x1 != 0) {
            show_score_and_lives(2);
         }

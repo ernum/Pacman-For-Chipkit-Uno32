@@ -306,7 +306,14 @@ void move(uint8_t matrix[128][32]) {
     int i,j;
     for(i = 0; i < 5; i++) {
       for(j = 0; j < 5; j++) {
-          final_matrix[pacman.x_pos + i][pacman.y_pos + j] = pacman_open[j][i]; // matrix is flipped on its axis
+          if (pacman.x_pos < 0) {
+              pacman.x_pos = 111;
+          }
+          else if (pacman.x_pos > 111) {
+              pacman.x_pos = 0;
+          }
+          final_matrix[pacman.x_pos + i][pacman.y_pos + j] = pacman_open[j][i];
+
       }
     }
 }
@@ -365,7 +372,7 @@ void show_score_and_lives(int dir)
 
 void update_score(int score[4]) {
   convert_array_to_matrix((uint8_t*)temp, final_matrix);
-  
+
   int ypos[4] = {8, 14, 20, 26};
   int i,j, digit;
 
@@ -378,7 +385,7 @@ void update_score(int score[4]) {
   }
 
   convert_matrix_to_array(final_matrix, temp);
-  display_board(0, temp); 
+  display_board(0, temp);
 }
 
 /*  Increment integer in arrays
