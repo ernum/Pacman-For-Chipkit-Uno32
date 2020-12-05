@@ -326,7 +326,7 @@ void move(uint8_t matrix[128][32]) {
 }
 
 
-void characters_add(int dir, uint8_t matrix[128][32]){
+void pacman_add(int dir, uint8_t matrix[128][32]){
     if (dir == 2 && final_matrix[pacman.x_pos][pacman.y_pos + 5] != 1 && pacman.y_pos < 31
             && final_matrix[pacman.x_pos + 1][pacman.y_pos + 5] != 1
             && final_matrix[pacman.x_pos + 2][pacman.y_pos + 5] != 1
@@ -369,10 +369,23 @@ void characters_add(int dir, uint8_t matrix[128][32]){
     }
 }
 
+void ghosts_add(uint8_t matrix[128][32]) {
+    int i,j;
+    for(i = 0; i < 5; i++) {
+      for(j = 0; j < 5; j++) {
+          final_matrix[blinky.x_pos + i][blinky.y_pos + j] = ghost_blinky[j][i];
+          final_matrix[inky.x_pos + i][inky.y_pos + j] = ghost_inky[j][i];
+          final_matrix[clyde.x_pos + i][clyde.y_pos + j] = ghost_clyde[j][i];
+          final_matrix[pinky.x_pos + i][pinky.y_pos + j] = ghost_pinky[j][i];
+      }
+    }
+}
+
 void show_score_and_lives(int dir)
 {
     convert_array_to_matrix((uint8_t*)board, final_matrix);
-    characters_add(dir, final_matrix);
+    ghosts_add(final_matrix);
+    pacman_add(dir, final_matrix);
     convert_matrix_to_array(final_matrix, temp);
     display_board(0, temp);
 }
