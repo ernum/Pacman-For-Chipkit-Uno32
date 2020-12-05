@@ -399,6 +399,17 @@ void paint_out(int dir, uint8_t matrix[128][32]) {
             }
         }
     }
+    int k;
+    for(k = 0; k < 105; k++) {
+      final_matrix[dot_coord[k][0]][dot_coord[k][1]] = 0;
+    }
+}
+
+void add_dots(uint8_t matrix[128][32]) {
+    int i;
+    for(i = 0; i < 105; i++) {
+      final_matrix[dot_coord[i][0]][dot_coord[i][1]] = 1;
+    }
 }
 
 void init()
@@ -406,6 +417,7 @@ void init()
   convert_array_to_matrix((uint8_t*)board, board_matrix);
   convert_array_to_matrix((uint8_t*)board, final_matrix);
   pacman_move(0, final_matrix);
+  add_dots(final_matrix);
   convert_matrix_to_array(final_matrix, temp);
   display_board(0, temp);
 }
@@ -415,6 +427,7 @@ void show_score_and_lives(int dir)
   convert_array_to_matrix((uint8_t*)temp, final_matrix);
   paint_out(dir, final_matrix);
   pacman_move(dir, final_matrix);
+  add_dots(final_matrix);
   convert_matrix_to_array(final_matrix, temp);
   display_board(0, temp);
 }

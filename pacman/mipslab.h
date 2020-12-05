@@ -50,6 +50,8 @@ extern char textbuffer[4][16];
 
 extern uint8_t final_matrix[128][32];
 
+extern const uint8_t const dot_coord[105][2];
+
 extern uint8_t temp[512];
 
 extern uint8_t board_matrix[128][32];
@@ -68,6 +70,7 @@ typedef struct {
     int x_pos;
     int y_pos;
 }Character;
+
 /* Numbers */
 extern const uint8_t const all_nums[10][5][3];
 
