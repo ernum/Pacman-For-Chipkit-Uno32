@@ -7,7 +7,6 @@
 #include <stdint.h>  /* Declarations of uint_32 and the like */
 #include <pic32mx.h> /* Declarations of system-specific addresses etc */
 #include "mipslab.h" /* Declatations for these labs */
-#include <string.h>
 
 /* Declare a helper function which is local to this file */
 static void num32asc(char *s, int);
@@ -305,8 +304,23 @@ void clear_screen()
 
 }
 
+int abs(int x, int y) {
+    if (x < y) {
+        return y - x;
+    }
+    else {
+        return x - y;
+    }
+}
 
-void move(uint8_t matrix[128][32]) {
+void character_add(uint8_t matrix[128][32]) {
+    if (abs(pacman.x_pos, blinky.x_pos) <= 2 && abs(pacman.y_pos, blinky.y_pos) <= 2 ||
+        abs(pacman.x_pos, inky.x_pos) <= 2 && abs(pacman.y_pos, inky.y_pos) <= 2 ||
+        abs(pacman.x_pos, clyde.x_pos) <= 2 && abs(pacman.y_pos, clyde.y_pos) <= 2 ||
+        abs(pacman.x_pos, pinky.x_pos) <= 2 && abs(pacman.y_pos, pinky.y_pos) <= 2) {
+        pacman.x_pos = 5;
+        pacman.y_pos = 13;
+    }
     int i,j;
     for(i = 0; i < 5; i++) {
       for(j = 0; j < 5; j++) {
@@ -326,46 +340,47 @@ void move(uint8_t matrix[128][32]) {
 }
 
 
-void pacman_add(int dir, uint8_t matrix[128][32]){
+
+void pacman_move(int dir, uint8_t matrix[128][32]){
     if (dir == 2 && final_matrix[pacman.x_pos][pacman.y_pos + 5] != 1 && pacman.y_pos < 31
             && final_matrix[pacman.x_pos + 1][pacman.y_pos + 5] != 1
             && final_matrix[pacman.x_pos + 2][pacman.y_pos + 5] != 1
             && final_matrix[pacman.x_pos + 3][pacman.y_pos + 5] != 1
             && final_matrix[pacman.x_pos + 4][pacman.y_pos + 5] != 1) {
-        move(final_matrix);
         pacman.y_pos ++;
+        character_add(final_matrix);
     }
     else if (dir == 8 && final_matrix[pacman.x_pos][pacman.y_pos - 1] != 1 && pacman.y_pos > 0
             && final_matrix[pacman.x_pos + 1][pacman.y_pos - 1] != 1
             && final_matrix[pacman.x_pos + 2][pacman.y_pos - 1] != 1
             && final_matrix[pacman.x_pos + 3][pacman.y_pos - 1] != 1
             && final_matrix[pacman.x_pos + 4][pacman.y_pos - 1] != 1) {
-        move(final_matrix);
         pacman.y_pos --;
+        character_add(final_matrix);
     }
     else if (dir == 6 && final_matrix[pacman.x_pos + 5][pacman.y_pos] != 1
             && final_matrix[pacman.x_pos + 5][pacman.y_pos + 1] != 1
             && final_matrix[pacman.x_pos + 5][pacman.y_pos + 2] != 1
             && final_matrix[pacman.x_pos + 5][pacman.y_pos + 3] != 1
             && final_matrix[pacman.x_pos + 5][pacman.y_pos + 4] != 1) {
-        move(final_matrix);
         pacman.x_pos ++;
+        character_add(final_matrix);
     }
     else if (dir == 4 && final_matrix[pacman.x_pos - 1][pacman.y_pos] != 1
             && final_matrix[pacman.x_pos - 1][pacman.y_pos + 1] != 1
             && final_matrix[pacman.x_pos - 1][pacman.y_pos + 2] != 1
             && final_matrix[pacman.x_pos - 1][pacman.y_pos + 3] != 1
             && final_matrix[pacman.x_pos - 1][pacman.y_pos + 4] != 1) {
-        move(final_matrix);
         pacman.x_pos --;
+        character_add(final_matrix);
     }
     else if (dir == 0) {
         pacman.x_pos = 5;
         pacman.y_pos = 13;
-        move(final_matrix);
+        character_add(final_matrix);
     }
     else {
-        move(final_matrix);
+        character_add(final_matrix);
     }
 }
 
@@ -384,8 +399,8 @@ void ghosts_add(uint8_t matrix[128][32]) {
 void show_score_and_lives(int dir)
 {
     convert_array_to_matrix((uint8_t*)board, final_matrix);
-    ghosts_add(final_matrix);
-    pacman_add(dir, final_matrix);
+
+    pacman_move(dir, final_matrix);
     convert_matrix_to_array(final_matrix, temp);
     display_board(0, temp);
 }
