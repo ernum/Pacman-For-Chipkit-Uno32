@@ -77,7 +77,8 @@ int main(void)
 	extern Character pinky;
 	pinky.x_pos = 81;
 	pinky.y_pos = 14;
-	show_score_and_lives(0); /* Add score to display */
+
+	init(); /* Add score to display */
 	reset_score();
 
 	int score[4] = {0, 0, 0, 0};

@@ -313,15 +313,18 @@ int abs(int x, int y) {
     }
 }
 
-void character_add(uint8_t matrix[128][32]) {
+void character_add(uint8_t matrix[128][32], int dir) {
     if (abs(pacman.x_pos, blinky.x_pos) <= 2 && abs(pacman.y_pos, blinky.y_pos) <= 2 ||
         abs(pacman.x_pos, inky.x_pos) <= 2 && abs(pacman.y_pos, inky.y_pos) <= 2 ||
         abs(pacman.x_pos, clyde.x_pos) <= 2 && abs(pacman.y_pos, clyde.y_pos) <= 2 ||
         abs(pacman.x_pos, pinky.x_pos) <= 2 && abs(pacman.y_pos, pinky.y_pos) <= 2) {
         pacman.x_pos = 5;
         pacman.y_pos = 13;
+        dir = -1;
     }
+
     int i,j;
+
     for(i = 0; i < 5; i++) {
       for(j = 0; j < 5; j++) {
           if (pacman.x_pos < 0) {
@@ -337,9 +340,8 @@ void character_add(uint8_t matrix[128][32]) {
           final_matrix[pinky.x_pos + i][pinky.y_pos + j] = ghost_pinky[j][i];
       }
     }
+
 }
-
-
 
 void pacman_move(int dir, uint8_t matrix[128][32]){
     if (dir == 2 && final_matrix[pacman.x_pos][pacman.y_pos + 5] != 1 && pacman.y_pos < 31
@@ -348,7 +350,7 @@ void pacman_move(int dir, uint8_t matrix[128][32]){
             && final_matrix[pacman.x_pos + 3][pacman.y_pos + 5] != 1
             && final_matrix[pacman.x_pos + 4][pacman.y_pos + 5] != 1) {
         pacman.y_pos ++;
-        character_add(final_matrix);
+        character_add(final_matrix, dir);
     }
     else if (dir == 8 && final_matrix[pacman.x_pos][pacman.y_pos - 1] != 1 && pacman.y_pos > 0
             && final_matrix[pacman.x_pos + 1][pacman.y_pos - 1] != 1
@@ -356,7 +358,7 @@ void pacman_move(int dir, uint8_t matrix[128][32]){
             && final_matrix[pacman.x_pos + 3][pacman.y_pos - 1] != 1
             && final_matrix[pacman.x_pos + 4][pacman.y_pos - 1] != 1) {
         pacman.y_pos --;
-        character_add(final_matrix);
+        character_add(final_matrix, dir);
     }
     else if (dir == 6 && final_matrix[pacman.x_pos + 5][pacman.y_pos] != 1
             && final_matrix[pacman.x_pos + 5][pacman.y_pos + 1] != 1
@@ -364,7 +366,7 @@ void pacman_move(int dir, uint8_t matrix[128][32]){
             && final_matrix[pacman.x_pos + 5][pacman.y_pos + 3] != 1
             && final_matrix[pacman.x_pos + 5][pacman.y_pos + 4] != 1) {
         pacman.x_pos ++;
-        character_add(final_matrix);
+        character_add(final_matrix, dir);
     }
     else if (dir == 4 && final_matrix[pacman.x_pos - 1][pacman.y_pos] != 1
             && final_matrix[pacman.x_pos - 1][pacman.y_pos + 1] != 1
@@ -372,37 +374,49 @@ void pacman_move(int dir, uint8_t matrix[128][32]){
             && final_matrix[pacman.x_pos - 1][pacman.y_pos + 3] != 1
             && final_matrix[pacman.x_pos - 1][pacman.y_pos + 4] != 1) {
         pacman.x_pos --;
-        character_add(final_matrix);
+        character_add(final_matrix, dir);
     }
     else if (dir == 0) {
         pacman.x_pos = 5;
         pacman.y_pos = 13;
-        character_add(final_matrix);
+        character_add(final_matrix, dir);
     }
     else {
-        character_add(final_matrix);
+        character_add(final_matrix, -1);
     }
 }
 
-void ghosts_add(uint8_t matrix[128][32]) {
+void paint_out(int dir, uint8_t matrix[128][32]) {
     int i,j;
-    for(i = 0; i < 5; i++) {
-      for(j = 0; j < 5; j++) {
-          final_matrix[blinky.x_pos + i][blinky.y_pos + j] = ghost_blinky[j][i];
-          final_matrix[inky.x_pos + i][inky.y_pos + j] = ghost_inky[j][i];
-          final_matrix[clyde.x_pos + i][clyde.y_pos + j] = ghost_clyde[j][i];
-          final_matrix[pinky.x_pos + i][pinky.y_pos + j] = ghost_pinky[j][i];
-      }
+    if (dir != -1 && dir != 0) {
+        for (i = 0; i < 5; i++) {
+            for (j = 0; j < 5; j++) {
+              final_matrix[pacman.x_pos + i][pacman.y_pos + j] = 0;
+              final_matrix[blinky.x_pos + i][blinky.y_pos + j] = 0;
+              final_matrix[inky.x_pos + i][inky.y_pos + j] = 0;
+              final_matrix[clyde.x_pos + i][clyde.y_pos + j] = 0;
+              final_matrix[pinky.x_pos + i][pinky.y_pos + j] = 0;
+            }
+        }
     }
+}
+
+void init()
+{
+  convert_array_to_matrix((uint8_t*)board, board_matrix);
+  convert_array_to_matrix((uint8_t*)board, final_matrix);
+  pacman_move(0, final_matrix);
+  convert_matrix_to_array(final_matrix, temp);
+  display_board(0, temp);
 }
 
 void show_score_and_lives(int dir)
 {
-    convert_array_to_matrix((uint8_t*)board, final_matrix);
-
-    pacman_move(dir, final_matrix);
-    convert_matrix_to_array(final_matrix, temp);
-    display_board(0, temp);
+  convert_array_to_matrix((uint8_t*)temp, final_matrix);
+  paint_out(dir, final_matrix);
+  pacman_move(dir, final_matrix);
+  convert_matrix_to_array(final_matrix, temp);
+  display_board(0, temp);
 }
 
 void update_score(int score[4]) {

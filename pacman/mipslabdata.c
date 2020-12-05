@@ -10,6 +10,7 @@
 
 char textbuffer[4][16];
 uint8_t final_matrix[128][32];
+uint8_t board_matrix[128][32];
 uint8_t temp[512];
 
 const uint8_t const font[] = {
@@ -245,7 +246,8 @@ const uint8_t const board[] = {
 	131, 130, 130, 130, 130, 254, 24, 36,
 	73, 36, 24, 255, 0, 1, 1, 125, 0,
 };
-// CHARACTERS
+
+/* CHARACTERS */
 
 //PAC-MAN
 int pacman_open_right[5][5] = {
@@ -301,6 +303,7 @@ int ghost_pinky[5][5] = {
 	1,1,1,1,1,
 	1,0,1,0,1,
 };
+
 const uint8_t const all_nums[10][5][3] = {
 	{
 		1, 1, 1,
