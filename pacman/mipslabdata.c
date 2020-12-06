@@ -304,6 +304,22 @@ int ghost_pinky[5][5] = {
 	1,0,1,0,1,
 };
 
+const uint8_t const opaque_heart[5][5] = {
+	0, 1, 0, 1, 0,
+	1, 1, 1, 1, 1,
+	1, 1, 1, 1, 1,
+	0, 1, 1, 1, 0,
+	0, 0, 1, 0, 0,
+};
+
+const uint8_t const transparent_heart[5][5] = {
+	0, 1, 0, 1, 0,
+	1, 0, 1, 0, 1, 
+	1, 0, 0, 0, 1,
+	0, 1, 0, 1, 0,
+	0, 0, 1, 0, 0,
+};
+
 const uint8_t const all_nums[10][5][3] = {
 	{
 		1, 1, 1,
@@ -371,7 +387,6 @@ const uint8_t const all_nums[10][5][3] = {
 };
 
 // Each row is a column with x, y, x, y ... coordinates
-
 uint8_t dot_coord_original [105][2] = {
 	3, 3, 3, 28,
 	7, 3, 7, 7, 7, 11, 7, 20, 7, 24, 7, 28,

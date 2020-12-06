@@ -388,9 +388,9 @@ void pacman_move_backup(int dir, uint8_t matrix[128][32]){
         character_add(final_matrix, dir);
     }
     else {
-        character_add(final_matrix,dir);
+        character_add(final_matrix, dir);
     }
-}
+} 
 /*
 Checks direction of pac-man and if he collides with any walls.
 */
@@ -455,7 +455,7 @@ void paint_out(int dir, uint8_t matrix[128][32]) {
     }
 }
 
-void add_dots(uint8_t matrix[128][32], uint8_t dot_matrix[105][2]) {
+void add_dots(uint8_t final_matrix[128][32], uint8_t dot_matrix[105][2]) {
     int i;
     for(i = 0; i < 105; i++) {
       final_matrix[dot_matrix[i][0]][dot_matrix[i][1]] = 1;
@@ -491,7 +491,7 @@ void update_score(int score[4]) {
   for (digit = 0; digit < 4; digit++) {
     for(i = 0; i < 3; i++) {
       for(j = 0; j < 5; j++) {
-          final_matrix[124 + i][ypos[digit] + j] = all_nums[score[digit]][j][i]; // matrix is flipped on its axis
+          final_matrix[124 + i][ypos[3 - digit] + j] = all_nums[score[digit]][j][i]; // matrix is flipped on its axis
       }
     }
   }
@@ -545,6 +545,44 @@ void reset_score()
   display_board(0, temp);
 }
 
+void reset_hearts(int* hearts) {
+  convert_array_to_matrix((uint8_t*)temp, final_matrix);
+
+  int ypos[4] = {8, 14, 20, 26};
+  int i,j,heart;
+
+  for (heart = 0; heart < 4; heart++) {
+    for(i = 0; i < 5; i++) {
+      for(j = 0; j < 5; j++) {
+          final_matrix[117 + i][ypos[3 - heart] + j] = opaque_heart[j][i]; // matrix is flipped on its axis
+      }
+    }
+  }
+
+  convert_matrix_to_array(final_matrix, temp);
+  display_board(0, temp);
+  *hearts = 4;
+}
+
+void decrement_hearts(int* hearts) {
+  if (*hearts == 0) {
+    reset_hearts(hearts);
+  } else {
+    *hearts -= 1;
+    convert_array_to_matrix((uint8_t*)temp, final_matrix);
+    int ypos[4] = {8, 14, 20, 26};
+    int i,j;
+
+    for(i = 0; i < 5; i++) {
+      for(j = 0; j < 5; j++) {
+          final_matrix[117 + i][ypos[*hearts] + j] = transparent_heart[j][i]; // matrix is flipped on its axis
+      }
+    }
+
+    convert_matrix_to_array(final_matrix, temp);
+    display_board(0, temp);
+  }
+}
 
 void display_update(void)
 {

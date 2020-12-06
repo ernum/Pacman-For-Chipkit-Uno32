@@ -16,7 +16,7 @@ uint8_t spi_send_recv(uint8_t data);
 
 /* Declare lab-related functions from mipslabfunc.c */
 char *itoaconv(int num);
-void labwork(void);
+void labwork(int score[4], int* hearts);
 int nextprime(int inval);
 void quicksleep(int cyc);
 void tick(unsigned int *timep);
@@ -50,7 +50,6 @@ extern char textbuffer[4][16];
 
 extern uint8_t final_matrix[128][32];
 
-
 extern uint8_t dot_coord_original[105][2];
 extern uint8_t dot_coord_variable[105][2];
 
@@ -71,6 +70,10 @@ extern int ghost_blinky[5][5];
 extern int ghost_inky[5][5];
 extern int ghost_clyde[5][5];
 extern int ghost_pinky[5][5];
+
+extern const uint8_t const opaque_heart[5][5];
+
+extern const uint8_t const transparent_heart[5][5];
 
 typedef struct {
     int x_pos;

@@ -11,6 +11,8 @@
 #include <pic32mx.h> /* Declarations of system-specific addresses etc */
 #include "mipslab.h" /* Declatations for these labs */
 
+int FPS = 60;
+
 int main(void)
 {
 	/*
@@ -77,21 +79,22 @@ int main(void)
 	extern Character pinky;
 	pinky.x_pos = 81;
 	pinky.y_pos = 14;
-
+	
 	int test_dir = 0;
 	int backup_dir = 0;
 
+	int hearts = 4;
+	int score[4] = {0, 0, 0, 0};
+
 	init(); /* Add score to display */
 	reset_score();
-
-	int score[4] = {0, 0, 0, 0};
+	reset_hearts(&hearts);
 
 	labinit(); /* Do any lab-specific initialization */
 
 	while (1)
 	{
-		increment_score(score);
-		labwork(); /* Do lab-specific things again and again */
+		labwork(score, &hearts); /* Do lab-specific things again and again */
 	}
 	return 0;
 }

@@ -32,24 +32,23 @@ int getbtns(void){
 }
 
 void btnpress(){
-   // Btn1. Down
    if ((PORTF >> 1) & 0x1 != 0) {
-       test_dir = 2;
+      test_dir = 2;
       //show_score_and_lives(2);
    }
    // Btn2. Up
    if ((PORTD >> 5) & 0x7 != 0) {
-       test_dir = 8;
+      test_dir = 8;
       //show_score_and_lives(8);
    }
    // Btn3. Right
    if ((PORTD >> 6) & 0x3 != 0) {
-       test_dir = 6;
+      test_dir = 6;
       //show_score_and_lives(6);
    }
    // Btn4. Left
    if ((PORTD >> 7) & 0x1 != 0) {
-       test_dir = 4;
+      test_dir = 4;
       //show_score_and_lives(4);
    }
    show_score_and_lives(test_dir);
@@ -60,11 +59,25 @@ void labinit( void )
 {
   TRISD |= 0xfe0; // trisd bits set to output
   TRISFSET = (1 << 1);
-  return;
+  
+  /* Initialisation and functionality of Timer 2 */
+  TMR2 = 0;                          // Resetting time to 0 x
+  T2CON = (T2CON & 0x7F87) | 0x8078; // Setting the ON bit, the prescaler to 256 and using a 32-bit timer.
+  PR2 = 312.5;                       // 80 Mhz / 256 / 10
+  IFS(0) = 0;                        // Set event flag to  0.
+
 }
 
 /* This function is called repetitively from the main program */
-void labwork( void )
+void labwork(int score[4], int* hearts)
 {
-  btnpress();
+   /* Get the 8th bit which is the interrupt for timer */
+   int event_flag = (IFS(0) & 0xF1FF) >> 8;
+   if (event_flag)
+   {
+      IFS(0) = 0;     // Reset event flag
+      increment_score(score);
+      decrement_hearts(hearts);
+      btnpress(); 
+   }
 }
