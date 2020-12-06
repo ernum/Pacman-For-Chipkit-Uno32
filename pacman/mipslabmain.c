@@ -78,6 +78,9 @@ int main(void)
 	pinky.x_pos = 81;
 	pinky.y_pos = 14;
 
+	int test_dir = 0;
+	int backup_dir = 0;
+
 	init(); /* Add score to display */
 	reset_score();
 

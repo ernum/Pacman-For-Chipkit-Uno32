@@ -50,13 +50,18 @@ extern char textbuffer[4][16];
 
 extern uint8_t final_matrix[128][32];
 
-extern const uint8_t const dot_coord_original[105][2];
-uint8_t dot_coord_variable[105][2];
+
+extern uint8_t dot_coord_original[105][2];
+extern uint8_t dot_coord_variable[105][2];
 
 extern uint8_t temp[512];
 
 extern uint8_t board_matrix[128][32];
 
+/* First direction to test*/
+extern int test_dir;
+/* If test_dir doesn't work this is the previous direction.*/
+extern int backup_dir;
 
 extern int pacman_open_right[5][5];
 extern int pacman_open_left[5][5];

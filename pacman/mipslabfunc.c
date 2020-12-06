@@ -350,12 +350,11 @@ void character_add(uint8_t matrix[128][32], int dir) {
           final_matrix[pinky.x_pos + i][pinky.y_pos + j] = ghost_pinky[j][i];
       }
     }
-
 }
-/*
-Checks direction of pac-man and if he collides with any walls.
-*/
-void pacman_move(int dir, uint8_t matrix[128][32]){
+
+// Move calculation fo backup direction
+int backup_dir;
+void pacman_move_backup(int dir, uint8_t matrix[128][32]){
     if (dir == 2 && final_matrix[pacman.x_pos][pacman.y_pos + 5] != 1 && pacman.y_pos < 31
             && final_matrix[pacman.x_pos + 1][pacman.y_pos + 5] != 1
             && final_matrix[pacman.x_pos + 2][pacman.y_pos + 5] != 1
@@ -388,13 +387,52 @@ void pacman_move(int dir, uint8_t matrix[128][32]){
         pacman.x_pos --;
         character_add(final_matrix, dir);
     }
-    else if (dir == 0) {
-        pacman.x_pos = 5;
-        pacman.y_pos = 13;
+    else {
+        character_add(final_matrix,dir);
+    }
+}
+/*
+Checks direction of pac-man and if he collides with any walls.
+*/
+void pacman_move(int dir, uint8_t matrix[128][32]){
+    if (dir == 2 && final_matrix[pacman.x_pos][pacman.y_pos + 5] != 1 && pacman.y_pos < 31
+            && final_matrix[pacman.x_pos + 1][pacman.y_pos + 5] != 1
+            && final_matrix[pacman.x_pos + 2][pacman.y_pos + 5] != 1
+            && final_matrix[pacman.x_pos + 3][pacman.y_pos + 5] != 1
+            && final_matrix[pacman.x_pos + 4][pacman.y_pos + 5] != 1) {
+        backup_dir = dir;
+        pacman.y_pos ++;
+        character_add(final_matrix, dir);
+    }
+    else if (dir == 8 && final_matrix[pacman.x_pos][pacman.y_pos - 1] != 1 && pacman.y_pos > 0
+            && final_matrix[pacman.x_pos + 1][pacman.y_pos - 1] != 1
+            && final_matrix[pacman.x_pos + 2][pacman.y_pos - 1] != 1
+            && final_matrix[pacman.x_pos + 3][pacman.y_pos - 1] != 1
+            && final_matrix[pacman.x_pos + 4][pacman.y_pos - 1] != 1) {
+        backup_dir = dir;
+        pacman.y_pos --;
+        character_add(final_matrix, dir);
+    }
+    else if (dir == 6 && final_matrix[pacman.x_pos + 5][pacman.y_pos] != 1
+            && final_matrix[pacman.x_pos + 5][pacman.y_pos + 1] != 1
+            && final_matrix[pacman.x_pos + 5][pacman.y_pos + 2] != 1
+            && final_matrix[pacman.x_pos + 5][pacman.y_pos + 3] != 1
+            && final_matrix[pacman.x_pos + 5][pacman.y_pos + 4] != 1) {
+        backup_dir = dir;
+        pacman.x_pos ++;
+        character_add(final_matrix, dir);
+    }
+    else if (dir == 4 && final_matrix[pacman.x_pos - 1][pacman.y_pos] != 1
+            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 1] != 1
+            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 2] != 1
+            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 3] != 1
+            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 4] != 1) {
+        backup_dir = dir;
+        pacman.x_pos --;
         character_add(final_matrix, dir);
     }
     else {
-        character_add(final_matrix, -1);
+        pacman_move_backup(backup_dir, final_matrix);
     }
 }
 

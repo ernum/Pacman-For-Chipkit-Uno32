@@ -369,8 +369,10 @@ const uint8_t const all_nums[10][5][3] = {
 		1, 1, 1,
 	},
 };
+
 // Each row is a column with x, y, x, y ... coordinates
-const uint8_t const dot_coord_original [105][2] = {
+
+uint8_t dot_coord_original [105][2] = {
 	3, 3, 3, 28,
 	7, 3, 7, 7, 7, 11, 7, 20, 7, 24, 7, 28,
 	13, 3, 13, 7, 13, 12, 13, 19, 13, 24, 13, 28,

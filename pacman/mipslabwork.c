@@ -17,6 +17,7 @@
 volatile int* porte = (volatile int*)0xbf886110;// initialize porte
 volatile int* portf = (volatile int*)0xbf886110;// initialize porte
 
+int test_dir;
 
 /* Interrupt Service Routine */
 void user_isr( void )
@@ -33,20 +34,25 @@ int getbtns(void){
 void btnpress(){
    // Btn1. Down
    if ((PORTF >> 1) & 0x1 != 0) {
-      show_score_and_lives(2);
+       test_dir = 2;
+      //show_score_and_lives(2);
    }
    // Btn2. Up
    if ((PORTD >> 5) & 0x7 != 0) {
-      show_score_and_lives(8);
+       test_dir = 8;
+      //show_score_and_lives(8);
    }
    // Btn3. Right
    if ((PORTD >> 6) & 0x3 != 0) {
-      show_score_and_lives(6);
+       test_dir = 6;
+      //show_score_and_lives(6);
    }
    // Btn4. Left
    if ((PORTD >> 7) & 0x1 != 0) {
-      show_score_and_lives(4);
+       test_dir = 4;
+      //show_score_and_lives(4);
    }
+   show_score_and_lives(test_dir);
 }
 
 /* Lab-specific initialization goes here */
