@@ -16,7 +16,7 @@ uint8_t spi_send_recv(uint8_t data);
 
 /* Declare lab-related functions from mipslabfunc.c */
 char *itoaconv(int num);
-void labwork(int* hearts);
+void labwork();
 int nextprime(int inval);
 void quicksleep(int cyc);
 void tick(unsigned int *timep);
@@ -73,6 +73,8 @@ extern int ghost_blinky[5][5];
 extern int ghost_inky[5][5];
 extern int ghost_clyde[5][5];
 extern int ghost_pinky[5][5];
+
+extern int hearts;
 
 extern const uint8_t const opaque_heart[5][5];
 

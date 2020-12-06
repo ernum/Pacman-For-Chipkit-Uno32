@@ -376,6 +376,7 @@ void reset_score()
 }
 
 int score[4];
+int hearts;
 void character_add(uint8_t matrix[128][32], int dir) {
     // Ghost collision detection
     if (abs(pacman.x_pos, blinky.x_pos) <= 2 && abs(pacman.y_pos, blinky.y_pos) <= 2 ||
@@ -384,6 +385,9 @@ void character_add(uint8_t matrix[128][32], int dir) {
         abs(pacman.x_pos, pinky.x_pos) <= 2 && abs(pacman.y_pos, pinky.y_pos) <= 2) {
         pacman.x_pos = 88;
         pacman.y_pos = 26;
+        hearts -= 1;
+        test_dir = 0;
+        backup_dir = 0;
         dir = -1;
     }
     // Add characters to board matrix
@@ -503,7 +507,7 @@ void pacman_move(int dir, uint8_t matrix[128][32]){
         backup_dir = dir;
         pacman.x_pos --;
         character_add(final_matrix, dir);
-    } 
+    }
     else {
         pacman_move_backup(backup_dir, final_matrix);
     }
@@ -535,6 +539,44 @@ void add_dots(uint8_t final_matrix[128][32], uint8_t dot_matrix[105][2]) {
     }
 }
 
+void reset_hearts() {
+  convert_array_to_matrix((uint8_t*)temp, final_matrix);
+
+  int ypos[4] = {8, 14, 20, 26};
+  int i,j,heart;
+
+  for (heart = 0; heart < 4; heart++) {
+    for(i = 0; i < 5; i++) {
+      for(j = 0; j < 5; j++) {
+          final_matrix[117 + i][ypos[3 - heart] + j] = opaque_heart[j][i]; // matrix is flipped on its axis
+      }
+    }
+  }
+
+  convert_matrix_to_array(final_matrix, temp);
+  display_board(0, temp);
+  hearts = 4;
+}
+
+void decrement_hearts() {
+  if (hearts == 0) {
+    reset_hearts(hearts);
+  } else {
+    convert_array_to_matrix((uint8_t*)temp, final_matrix);
+    int ypos[4] = {8, 14, 20, 26};
+    int i,j;
+
+    for(i = 0; i < 5; i++) {
+      for(j = 0; j < 5; j++) {
+          final_matrix[117 + i][ypos[hearts] + j] = transparent_heart[j][i]; // matrix is flipped on its axis
+      }
+    }
+
+    convert_matrix_to_array(final_matrix, temp);
+    display_board(0, temp);
+  }
+}
+
 void start_menu() {
   int i = 0;
   int counter = 0;
@@ -545,7 +587,7 @@ void start_menu() {
       break;
     }
   }
-  
+
   i = 1;
   while(1) {
     if (i == 1) {
@@ -583,51 +625,13 @@ void init()
 void show_score_and_lives(int dir)
 {
   convert_array_to_matrix((uint8_t*)temp, final_matrix);
+  decrement_hearts();
   update_score(score);
   paint_out(dir, final_matrix);
   pacman_move(dir, final_matrix);
   add_dots(final_matrix, dot_coord_variable);
   convert_matrix_to_array(final_matrix, temp);
   display_board(0, temp);
-}
-
-void reset_hearts(int* hearts) {
-  convert_array_to_matrix((uint8_t*)temp, final_matrix);
-
-  int ypos[4] = {8, 14, 20, 26};
-  int i,j,heart;
-
-  for (heart = 0; heart < 4; heart++) {
-    for(i = 0; i < 5; i++) {
-      for(j = 0; j < 5; j++) {
-          final_matrix[117 + i][ypos[3 - heart] + j] = opaque_heart[j][i]; // matrix is flipped on its axis
-      }
-    }
-  }
-
-  convert_matrix_to_array(final_matrix, temp);
-  display_board(0, temp);
-  *hearts = 4;
-}
-
-void decrement_hearts(int* hearts) {
-  if (*hearts == 0) {
-    reset_hearts(hearts);
-  } else {
-    *hearts -= 1;
-    convert_array_to_matrix((uint8_t*)temp, final_matrix);
-    int ypos[4] = {8, 14, 20, 26};
-    int i,j;
-
-    for(i = 0; i < 5; i++) {
-      for(j = 0; j < 5; j++) {
-          final_matrix[117 + i][ypos[*hearts] + j] = transparent_heart[j][i]; // matrix is flipped on its axis
-      }
-    }
-
-    convert_matrix_to_array(final_matrix, temp);
-    display_board(0, temp);
-  }
 }
 
 void display_update(void)

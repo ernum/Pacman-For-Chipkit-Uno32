@@ -69,14 +69,14 @@ void labinit( void )
 }
 
 /* This function is called repetitively from the main program */
-void labwork(int* hearts)
+//void labwork(int* hearts)
+void labwork()
 {
    /* Get the 8th bit which is the interrupt for timer */
    int event_flag = (IFS(0) & 0xF1FF) >> 8;
    if (event_flag)
    {
       IFS(0) = 0;     // Reset event flag
-      decrement_hearts(hearts);
       btnpress();
    }
 }

@@ -87,10 +87,10 @@ int main(void)
 
 	int hearts = 4;
 	int score[4] = {0, 0, 0, 0};
-	
+
 	init(); /* Add score to display */
 	reset_score();
-	reset_hearts(&hearts);
+	reset_hearts();
 
 	labinit(); /* Do any lab-specific initialization */
 
@@ -98,7 +98,7 @@ int main(void)
 
 	while (1)
 	{
-		labwork(&hearts); /* Do lab-specific things again and again */
+		labwork(); /* Do lab-specific things again and again */
 	}
 	return 0;
 }
