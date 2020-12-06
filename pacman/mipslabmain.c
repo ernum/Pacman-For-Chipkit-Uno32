@@ -64,6 +64,8 @@ int main(void)
 	clear_screen(); /* Clears the screen before doing anything else */
 	display_update();
 
+	start_menu();
+
 	extern Character pacman;
 	pacman.x_pos = 88;
 	pacman.y_pos = 26;
@@ -85,12 +87,14 @@ int main(void)
 
 	int hearts = 4;
 	int score[4] = {0, 0, 0, 0};
-
+	
 	init(); /* Add score to display */
 	reset_score();
 	reset_hearts(&hearts);
 
 	labinit(); /* Do any lab-specific initialization */
+
+	delay(100);
 
 	while (1)
 	{

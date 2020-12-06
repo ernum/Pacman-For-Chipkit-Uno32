@@ -495,6 +495,15 @@ void pacman_move(int dir, uint8_t matrix[128][32]){
         pacman.x_pos --;
         character_add(final_matrix, dir);
     }
+    else if (dir == 4 && final_matrix[pacman.x_pos - 1][pacman.y_pos] != 1
+            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 1] != 1
+            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 2] != 1
+            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 3] != 1
+            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 4] != 1) {
+        backup_dir = dir;
+        pacman.x_pos --;
+        character_add(final_matrix, dir);
+    } 
     else {
         pacman_move_backup(backup_dir, final_matrix);
     }
@@ -524,6 +533,41 @@ void add_dots(uint8_t final_matrix[128][32], uint8_t dot_matrix[105][2]) {
     for(i = 0; i < 105; i++) {
       final_matrix[dot_matrix[i][0]][dot_matrix[i][1]] = 1;
     }
+}
+
+void start_menu() {
+  int i = 0;
+  int counter = 0;
+  while(1) {
+    display_board(0, all_menu_screens[i]);
+    counter++;
+    if (counter == 3000) {
+      break;
+    }
+  }
+  
+  i = 1;
+  while(1) {
+    if (i == 1) {
+      display_board(0, all_menu_screens[i]);
+      if ((PORTD >> 7) & 0x1 != 0) {
+        /* Select */
+        break;
+      } else if ((PORTF >> 1) & 0x1 != 0) {
+        /* Down */
+        i = 2;
+      }
+    } else {
+      display_board(0, all_menu_screens[i]);
+      if ((PORTD >> 7) & 0x1 != 0) {
+        /* Select */
+        break;
+      } else if ((PORTD >> 5) & 0x7 != 0) {
+        /* Up */
+        i = 1;
+      }
+    }
+  }
 }
 
 void init()

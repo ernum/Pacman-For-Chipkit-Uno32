@@ -57,7 +57,8 @@ extern uint8_t temp[512];
 
 extern uint8_t board_matrix[128][32];
 
-extern score[4];
+/* Start screen related */
+extern uint8_t all_menu_screens[3][512];
 
 /* First direction to test*/
 extern int test_dir;
