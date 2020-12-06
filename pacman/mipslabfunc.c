@@ -314,6 +314,7 @@ int abs(int x, int y) {
 }
 
 void character_add(uint8_t matrix[128][32], int dir) {
+    // Ghost collision detection
     if (abs(pacman.x_pos, blinky.x_pos) <= 2 && abs(pacman.y_pos, blinky.y_pos) <= 2 ||
         abs(pacman.x_pos, inky.x_pos) <= 2 && abs(pacman.y_pos, inky.y_pos) <= 2 ||
         abs(pacman.x_pos, clyde.x_pos) <= 2 && abs(pacman.y_pos, clyde.y_pos) <= 2 ||
@@ -322,7 +323,16 @@ void character_add(uint8_t matrix[128][32], int dir) {
         pacman.y_pos = 13;
         dir = -1;
     }
-
+    // eaten dot detection
+    int k;
+    for(k = 0; k < 105; k++) {
+        if (abs(pacman.x_pos + 2, dot_coord_variable[k][0]) <= 2 &&
+            abs(pacman.y_pos + 2, dot_coord_variable[k][1]) <= 2) {
+            dot_coord_variable[k][0] = 0;
+            dot_coord_variable[k][1] = 0;
+        }
+    }
+    // Add characters to board matrix
     int i,j;
 
     for(i = 0; i < 5; i++) {
@@ -342,7 +352,9 @@ void character_add(uint8_t matrix[128][32], int dir) {
     }
 
 }
-
+/*
+Checks direction of pac-man and if he collides with any walls.
+*/
 void pacman_move(int dir, uint8_t matrix[128][32]){
     if (dir == 2 && final_matrix[pacman.x_pos][pacman.y_pos + 5] != 1 && pacman.y_pos < 31
             && final_matrix[pacman.x_pos + 1][pacman.y_pos + 5] != 1
@@ -401,14 +413,14 @@ void paint_out(int dir, uint8_t matrix[128][32]) {
     }
     int k;
     for(k = 0; k < 105; k++) {
-      final_matrix[dot_coord[k][0]][dot_coord[k][1]] = 0;
+      final_matrix[dot_coord_variable[k][0]][dot_coord_variable[k][1]] = 0;
     }
 }
 
-void add_dots(uint8_t matrix[128][32]) {
+void add_dots(uint8_t matrix[128][32], uint8_t dot_matrix[105][2]) {
     int i;
     for(i = 0; i < 105; i++) {
-      final_matrix[dot_coord[i][0]][dot_coord[i][1]] = 1;
+      final_matrix[dot_matrix[i][0]][dot_matrix[i][1]] = 1;
     }
 }
 
@@ -417,7 +429,7 @@ void init()
   convert_array_to_matrix((uint8_t*)board, board_matrix);
   convert_array_to_matrix((uint8_t*)board, final_matrix);
   pacman_move(0, final_matrix);
-  add_dots(final_matrix);
+  add_dots(final_matrix, dot_coord_original);
   convert_matrix_to_array(final_matrix, temp);
   display_board(0, temp);
 }
@@ -427,7 +439,7 @@ void show_score_and_lives(int dir)
   convert_array_to_matrix((uint8_t*)temp, final_matrix);
   paint_out(dir, final_matrix);
   pacman_move(dir, final_matrix);
-  add_dots(final_matrix);
+  add_dots(final_matrix, dot_coord_variable);
   convert_matrix_to_array(final_matrix, temp);
   display_board(0, temp);
 }

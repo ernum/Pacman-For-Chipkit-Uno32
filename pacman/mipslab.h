@@ -50,7 +50,8 @@ extern char textbuffer[4][16];
 
 extern uint8_t final_matrix[128][32];
 
-extern const uint8_t const dot_coord[105][2];
+extern const uint8_t const dot_coord_original[105][2];
+uint8_t dot_coord_variable[105][2];
 
 extern uint8_t temp[512];
 
