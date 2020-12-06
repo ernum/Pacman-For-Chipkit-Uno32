@@ -59,7 +59,7 @@ void labinit( void )
 {
   TRISD |= 0xfe0; // trisd bits set to output
   TRISFSET = (1 << 1);
-  
+
   /* Initialisation and functionality of Timer 2 */
   TMR2 = 0;                          // Resetting time to 0 x
   T2CON = (T2CON & 0x7F87) | 0x8078; // Setting the ON bit, the prescaler to 256 and using a 32-bit timer.
@@ -69,15 +69,14 @@ void labinit( void )
 }
 
 /* This function is called repetitively from the main program */
-void labwork(int score[4], int* hearts)
+void labwork(int* hearts)
 {
    /* Get the 8th bit which is the interrupt for timer */
    int event_flag = (IFS(0) & 0xF1FF) >> 8;
    if (event_flag)
    {
       IFS(0) = 0;     // Reset event flag
-      increment_score(score);
       decrement_hearts(hearts);
-      btnpress(); 
+      btnpress();
    }
 }

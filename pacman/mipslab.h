@@ -16,7 +16,7 @@ uint8_t spi_send_recv(uint8_t data);
 
 /* Declare lab-related functions from mipslabfunc.c */
 char *itoaconv(int num);
-void labwork(int score[4], int* hearts);
+void labwork(int* hearts);
 int nextprime(int inval);
 void quicksleep(int cyc);
 void tick(unsigned int *timep);
@@ -50,12 +50,14 @@ extern char textbuffer[4][16];
 
 extern uint8_t final_matrix[128][32];
 
-extern uint8_t dot_coord_original[105][2];
-extern uint8_t dot_coord_variable[105][2];
+extern uint8_t dot_coord_original[104][2];
+extern uint8_t dot_coord_variable[104][2];
 
 extern uint8_t temp[512];
 
 extern uint8_t board_matrix[128][32];
+
+extern score[4];
 
 /* First direction to test*/
 extern int test_dir;

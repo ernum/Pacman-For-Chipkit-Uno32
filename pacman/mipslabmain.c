@@ -65,8 +65,8 @@ int main(void)
 	display_update();
 
 	extern Character pacman;
-	pacman.x_pos = 5;
-	pacman.y_pos = 13;
+	pacman.x_pos = 88;
+	pacman.y_pos = 26;
 	extern Character blinky;
 	blinky.x_pos = 88;
 	blinky.y_pos = 7;
@@ -79,7 +79,7 @@ int main(void)
 	extern Character pinky;
 	pinky.x_pos = 81;
 	pinky.y_pos = 14;
-	
+
 	int test_dir = 0;
 	int backup_dir = 0;
 
@@ -94,7 +94,7 @@ int main(void)
 
 	while (1)
 	{
-		labwork(score, &hearts); /* Do lab-specific things again and again */
+		labwork(&hearts); /* Do lab-specific things again and again */
 	}
 	return 0;
 }

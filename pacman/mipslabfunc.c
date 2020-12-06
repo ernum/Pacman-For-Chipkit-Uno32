@@ -313,24 +313,78 @@ int abs(int x, int y) {
     }
 }
 
+void update_score(int score[4]) {
+  convert_array_to_matrix((uint8_t*)temp, final_matrix);
+
+  int ypos[4] = {8, 14, 20, 26};
+  int i,j, digit;
+
+  for (digit = 0; digit < 4; digit++) {
+    for(i = 0; i < 3; i++) {
+      for(j = 0; j < 5; j++) {
+          final_matrix[124 + i][ypos[3 - digit] + j] = all_nums[score[digit]][j][i]; // matrix is flipped on its axis
+      }
+    }
+  }
+
+  convert_matrix_to_array(final_matrix, temp);
+  display_board(0, temp);
+}
+
+/*  Increment integer in arrays
+    to then display on chipkit.
+*/
+void increment_score(int score[4]) {
+  score[0]++;
+  if (score[0] > 9) {
+      score[0] = 0;
+      score[1]++;
+
+      if (score[1] > 9) {
+            score[1] = 0;
+            score[2]++;
+
+            if (score[2] > 9) {
+                score[2] = 0;
+                score[3]++;
+
+                if (score[3] > 9) {
+                    score[3] = 0;
+                }
+            }
+      }
+  }
+}
+
+void reset_score()
+{
+  convert_array_to_matrix((uint8_t*)temp, final_matrix);
+
+  int ypos[4] = {8, 14, 20, 26};
+  int i,j, digit;
+
+  for (digit = 0; digit < 4; digit++) {
+    for(i = 0; i < 3; i++) {
+      for(j = 0; j < 5; j++) {
+          final_matrix[124 + i][ypos[digit] + j] = all_nums[0][j][i]; // matrix is flipped on its axis
+      }
+    }
+  }
+
+  convert_matrix_to_array(final_matrix, temp);
+  display_board(0, temp);
+}
+
+int score[4];
 void character_add(uint8_t matrix[128][32], int dir) {
     // Ghost collision detection
     if (abs(pacman.x_pos, blinky.x_pos) <= 2 && abs(pacman.y_pos, blinky.y_pos) <= 2 ||
         abs(pacman.x_pos, inky.x_pos) <= 2 && abs(pacman.y_pos, inky.y_pos) <= 2 ||
         abs(pacman.x_pos, clyde.x_pos) <= 2 && abs(pacman.y_pos, clyde.y_pos) <= 2 ||
         abs(pacman.x_pos, pinky.x_pos) <= 2 && abs(pacman.y_pos, pinky.y_pos) <= 2) {
-        pacman.x_pos = 5;
-        pacman.y_pos = 13;
+        pacman.x_pos = 88;
+        pacman.y_pos = 26;
         dir = -1;
-    }
-    // eaten dot detection
-    int k;
-    for(k = 0; k < 105; k++) {
-        if (abs(pacman.x_pos + 2, dot_coord_variable[k][0]) <= 2 &&
-            abs(pacman.y_pos + 2, dot_coord_variable[k][1]) <= 2) {
-            dot_coord_variable[k][0] = 0;
-            dot_coord_variable[k][1] = 0;
-        }
     }
     // Add characters to board matrix
     int i,j;
@@ -349,6 +403,16 @@ void character_add(uint8_t matrix[128][32], int dir) {
           final_matrix[clyde.x_pos + i][clyde.y_pos + j] = ghost_clyde[j][i];
           final_matrix[pinky.x_pos + i][pinky.y_pos + j] = ghost_pinky[j][i];
       }
+    }
+    // eaten dot detection
+    int k;
+    for(k = 0; k < 104; k++) {
+        if (abs(pacman.x_pos + 2, dot_coord_variable[k][0]) <= 2 &&
+            abs(pacman.y_pos + 2, dot_coord_variable[k][1]) <= 2) {
+            dot_coord_variable[k][0] = 0;
+            dot_coord_variable[k][1] = 0;
+            increment_score(score);
+        }
     }
 }
 
@@ -390,7 +454,7 @@ void pacman_move_backup(int dir, uint8_t matrix[128][32]){
     else {
         character_add(final_matrix, dir);
     }
-} 
+}
 /*
 Checks direction of pac-man and if he collides with any walls.
 */
@@ -475,72 +539,10 @@ void init()
 void show_score_and_lives(int dir)
 {
   convert_array_to_matrix((uint8_t*)temp, final_matrix);
+  update_score(score);
   paint_out(dir, final_matrix);
   pacman_move(dir, final_matrix);
   add_dots(final_matrix, dot_coord_variable);
-  convert_matrix_to_array(final_matrix, temp);
-  display_board(0, temp);
-}
-
-void update_score(int score[4]) {
-  convert_array_to_matrix((uint8_t*)temp, final_matrix);
-
-  int ypos[4] = {8, 14, 20, 26};
-  int i,j, digit;
-
-  for (digit = 0; digit < 4; digit++) {
-    for(i = 0; i < 3; i++) {
-      for(j = 0; j < 5; j++) {
-          final_matrix[124 + i][ypos[3 - digit] + j] = all_nums[score[digit]][j][i]; // matrix is flipped on its axis
-      }
-    }
-  }
-
-  convert_matrix_to_array(final_matrix, temp);
-  display_board(0, temp);
-}
-
-/*  Increment integer in arrays
-    to then display on chipkit.
-*/
-void increment_score(int score[4]) {
-  score[0]++;
-  if (score[0] > 9) {
-      score[0] = 0;
-      score[1]++;
-
-      if (score[1] > 9) {
-            score[1] = 0;
-            score[2]++;
-
-            if (score[2] > 9) {
-                score[2] = 0;
-                score[3]++;
-
-                if (score[3] > 9) {
-                    score[3] = 0;
-                }
-            }
-      }
-  }
-  update_score(score);
-}
-
-void reset_score()
-{
-  convert_array_to_matrix((uint8_t*)temp, final_matrix);
-
-  int ypos[4] = {8, 14, 20, 26};
-  int i,j, digit;
-
-  for (digit = 0; digit < 4; digit++) {
-    for(i = 0; i < 3; i++) {
-      for(j = 0; j < 5; j++) {
-          final_matrix[124 + i][ypos[digit] + j] = all_nums[0][j][i]; // matrix is flipped on its axis
-      }
-    }
-  }
-
   convert_matrix_to_array(final_matrix, temp);
   display_board(0, temp);
 }
