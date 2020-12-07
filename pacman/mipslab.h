@@ -84,6 +84,7 @@ extern const uint8_t const transparent_heart[5][5];
 typedef struct {
     int x_pos;
     int y_pos;
+    int dir;
 }Character;
 
 /* Numbers */

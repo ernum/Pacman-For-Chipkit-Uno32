@@ -409,81 +409,82 @@ int check_dir(Character character, int dir) {
     }
 }
 /*
-Checks if blinky is in an intersection and calculates it's direction.
+Checks if ghost is in an intersection and calculates it's direction.
 New direction is based on next step closest to pacman.
 */
-int blinky_dir = 4;
-void intersection_direction() {
+
+
+void intersection_direction(Character *character) {
     // Direction priority is Up, Left, Down, Right.
     // A ghost can't go back the same direction it came from.
     int i;
     for (i = 0; i < 38; i++) {
-        if (blinky.x_pos == intersection_coord[i][0] &&
-            blinky.y_pos == intersection_coord[i][1]) {
+        if ((*character).x_pos == intersection_coord[i][0] &&
+            (*character).y_pos == intersection_coord[i][1]) {
                 // Up and down are both valid?
-                if (check_dir(blinky, 8) == 8 && check_dir(blinky, 2) == 2 &&
-                    blinky_dir != 2 && blinky_dir != 8) {
-                    if (abs(pacman.y_pos, blinky.y_pos - 1) <=
-                        abs(pacman.y_pos, blinky.y_pos + 1)) {
-                        blinky_dir = 8;
+                if (check_dir(*character, 8) == 8 && check_dir(*character, 2) == 2 &&
+                    (*character).dir != 2 && (*character).dir != 8) {
+                    if (abs(pacman.y_pos, (*character).y_pos - 1) <=
+                        abs(pacman.y_pos, (*character).y_pos + 1)) {
+                        (*character).dir = 8;
                     }
                     else {
-                        blinky_dir = 2;
+                        (*character).dir = 2;
                     }
                 }
                 // Up and left are both valid?
-                else if (check_dir(blinky, 8) == 8 && check_dir(blinky, 4) == 4 &&
-                    blinky_dir != 2 && blinky_dir != 6) {
-                    if (abs(pacman.y_pos, blinky.y_pos - 1) <=
-                        abs(pacman.y_pos, blinky.y_pos)) {
-                        blinky_dir = 8;
+                else if (check_dir(*character, 8) == 8 && check_dir(*character, 4) == 4 &&
+                    (*character).dir != 2 && (*character).dir != 6) {
+                    if (abs(pacman.y_pos, (*character).y_pos - 1) <=
+                        abs(pacman.y_pos, (*character).y_pos)) {
+                        (*character).dir = 8;
                     }
                     else {
-                        blinky_dir = 4;
+                        (*character).dir = 4;
                     }
                 }
                 // Up and right are both valid?
-                else if (check_dir(blinky, 8) == 8 && check_dir(blinky, 6) == 6 &&
-                    blinky_dir != 2 && blinky_dir != 4) {
-                    if (abs(pacman.y_pos, blinky.y_pos - 1) <=
-                        abs(pacman.y_pos, blinky.y_pos)) {
-                        blinky_dir = 8;
+                else if (check_dir(*character, 8) == 8 && check_dir(*character, 6) == 6 &&
+                    (*character).dir != 2 && (*character).dir != 4) {
+                    if (abs(pacman.y_pos, (*character).y_pos - 1) <=
+                        abs(pacman.y_pos, (*character).y_pos)) {
+                        (*character).dir = 8;
                     }
                     else {
-                        blinky_dir = 6;
+                        (*character).dir = 6;
                     }
                 }
                 // Left and down are both valid?
-                else if (check_dir(blinky, 4) == 4 && check_dir(blinky, 2) == 2 &&
-                    blinky_dir != 6 && blinky_dir != 8) {
-                    if (abs(pacman.x_pos, blinky.x_pos - 1) <=
-                        abs(pacman.x_pos, blinky.x_pos)) {
-                        blinky_dir = 4;
+                else if (check_dir(*character, 4) == 4 && check_dir(*character, 2) == 2 &&
+                    (*character).dir != 6 && (*character).dir != 8) {
+                    if (abs(pacman.x_pos, (*character).x_pos - 1) <=
+                        abs(pacman.x_pos, (*character).x_pos)) {
+                        (*character).dir = 4;
                     }
                     else {
-                        blinky_dir = 2;
+                        (*character).dir = 2;
                     }
                 }
                 // Left and Right are both valid?
-                else if (check_dir(blinky, 4) == 4 && check_dir(blinky, 6) == 6 &&
-                    blinky_dir != 6 && blinky_dir != 4) {
-                    if (abs(pacman.x_pos, blinky.x_pos - 1) <=
-                        abs(pacman.x_pos, blinky.x_pos + 1)) {
-                        blinky_dir = 4;
+                else if (check_dir(*character, 4) == 4 && check_dir(*character, 6) == 6 &&
+                    (*character).dir != 6 && (*character).dir != 4) {
+                    if (abs(pacman.x_pos, (*character).x_pos - 1) <=
+                        abs(pacman.x_pos, (*character).x_pos + 1)) {
+                        (*character).dir = 4;
                     }
                     else {
-                        blinky_dir = 6;
+                        (*character).dir = 6;
                     }
                 }
                 // Down and Right are both valid?
-                else if (check_dir(blinky, 2) == 2 && check_dir(blinky, 6) == 6 &&
-                    blinky_dir != 8 && blinky_dir != 4) {
-                    if (abs(pacman.y_pos, blinky.y_pos + 1) <=
-                        abs(pacman.y_pos, blinky.y_pos)) {
-                        blinky_dir = 2;
+                else if (check_dir(*character, 2) == 2 && check_dir(*character, 6) == 6 &&
+                    (*character).dir != 8 && (*character).dir != 4) {
+                    if (abs(pacman.y_pos, (*character).y_pos + 1) <=
+                        abs(pacman.y_pos, (*character).y_pos)) {
+                        (*character).dir = 2;
                     }
                     else {
-                        blinky_dir = 6;
+                        (*character).dir = 6;
                     }
                 }
             }
@@ -492,54 +493,49 @@ void intersection_direction() {
 /*
 Moves the ghosts. (As of now only implemented for Blinky)
 */
-void ghosts_move() {
-    // check if in intersection
-    intersection_direction();
-    if (check_dir(blinky, blinky_dir) == 2) {
-        blinky.y_pos ++;
-    }
-    else if (check_dir(blinky, blinky_dir) == 8) {
-        blinky.y_pos --;
-    }
-    else if (check_dir(blinky, blinky_dir) == 6) {
-        blinky.x_pos ++;
-    }
-    else if (check_dir(blinky, blinky_dir) == 4) {
-        blinky.x_pos --;
-    }
-    //try new directions when stuck on wall.
-    else if (check_dir(blinky, 4) == 4 && blinky_dir != 6) {
-        blinky_dir = 4;
-    }
-    else if (check_dir(blinky, 2) == 2 && blinky_dir != 8) {
-        blinky_dir = 2;
-    }
-    else if (check_dir(blinky, 8) == 8 && blinky_dir != 2) {
-        blinky_dir = 8;
-    }
-    else if (check_dir(blinky, 6) == 6 && blinky_dir != 4) {
-        blinky_dir = 6;
-    }
-    else if (blinky.x_pos >= 111) {
-        blinky_dir = 4;
-    }
-    else if (blinky.x_pos <= 1) {
-        blinky_dir = 6;
-    }
-    int i, j;
-    for(i = 0; i < 5; i++) {
-      for(j = 0; j < 5; j++) {
-          final_matrix[blinky.x_pos + i][blinky.y_pos + j] = ghost_blinky[j][i];
-          final_matrix[inky.x_pos + i][inky.y_pos + j] = ghost_inky[j][i];
-          final_matrix[clyde.x_pos + i][clyde.y_pos + j] = ghost_clyde[j][i];
-          final_matrix[pinky.x_pos + i][pinky.y_pos + j] = ghost_pinky[j][i];
-      }
+
+void ghosts_move(Character *character) {
+    if ((*character).dir != 0) {
+        // check if in intersection
+        intersection_direction(character);
+        if (check_dir(*character, (*character).dir) == 2) {
+            (*character).y_pos ++;
+        }
+        else if (check_dir(*character, (*character).dir) == 8) {
+            (*character).y_pos --;
+        }
+        else if (check_dir(*character, (*character).dir) == 6) {
+            (*character).x_pos ++;
+        }
+        else if (check_dir(*character, (*character).dir) == 4) {
+            (*character).x_pos --;
+        }
+        //try new directions when stuck on wall.
+        else if (check_dir(*character, 4) == 4 && (*character).dir != 6) {
+            (*character).dir = 4;
+        }
+        else if (check_dir(*character, 2) == 2 && (*character).dir != 8) {
+            (*character).dir = 2;
+        }
+        else if (check_dir(*character, 8) == 8 && (*character).dir != 2) {
+            (*character).dir = 8;
+        }
+        else if (check_dir(*character, 6) == 6 && (*character).dir != 4) {
+            (*character).dir = 6;
+        }
+        else if ((*character).x_pos >= 111) {
+            (*character).dir = 4;
+        }
+        else if ((*character).x_pos <= 1) {
+            (*character).dir = 6;
+        }
     }
 }
 
 int score[4];
 int hearts;
 int move_counter = 0;
+int dots_eaten = 0;
 void character_add(uint8_t matrix[128][32], int dir) {
     // Ghost collision detection
     if (abs(pacman.x_pos, blinky.x_pos) <= 2 && abs(pacman.y_pos, blinky.y_pos) <= 2 ||
@@ -565,10 +561,32 @@ void character_add(uint8_t matrix[128][32], int dir) {
           }
           final_matrix[pacman.x_pos + i][pacman.y_pos + j] = pacman_open_right[j][i];
           if (move_counter == 50) {
-              ghosts_move();
+              ghosts_move(&blinky);
+              if (dots_eaten == 10) {
+                  pinky.x_pos = 88;
+                  pinky.y_pos = 7;
+                  pinky.dir = 4;
+              }
+              ghosts_move(&pinky);
+              if (dots_eaten == 20) {
+                  inky.x_pos = 88;
+                  inky.y_pos = 7;
+                  inky.dir = 4;
+              }
+              ghosts_move(&inky);
+              if (dots_eaten == 40) {
+                  clyde.x_pos = 88;
+                  clyde.y_pos = 7;
+                  clyde.dir = 4;
+              }
+              ghosts_move(&clyde);
               move_counter = 0;
           }
           move_counter ++;
+          final_matrix[blinky.x_pos + i][blinky.y_pos + j] = ghost_blinky[j][i];
+          final_matrix[inky.x_pos + i][inky.y_pos + j] = ghost_inky[j][i];
+          final_matrix[clyde.x_pos + i][clyde.y_pos + j] = ghost_clyde[j][i];
+          final_matrix[pinky.x_pos + i][pinky.y_pos + j] = ghost_pinky[j][i];
       }
     }
     // eaten dot detection
@@ -579,6 +597,7 @@ void character_add(uint8_t matrix[128][32], int dir) {
             dot_coord_variable[k][0] = 0;
             dot_coord_variable[k][1] = 0;
             increment_score(score);
+            dots_eaten ++;
         }
     }
 }

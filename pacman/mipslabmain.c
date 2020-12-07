@@ -72,15 +72,19 @@ int main(void)
 	extern Character blinky;
 	blinky.x_pos = 88;
 	blinky.y_pos = 7;
+	blinky.dir = 4;
 	extern Character inky;
 	inky.x_pos = 87;
 	inky.y_pos = 14;
+	inky.dir = 0;
 	extern Character clyde;
 	clyde.x_pos = 93;
 	clyde.y_pos = 14;
+	clyde.dir = 0;
 	extern Character pinky;
 	pinky.x_pos = 81;
 	pinky.y_pos = 14;
+	pinky.dir = 0;
 
 	int test_dir = 0;
 	int backup_dir = 0;
