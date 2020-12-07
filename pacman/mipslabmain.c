@@ -64,7 +64,7 @@ int main(void)
 	clear_screen(); /* Clears the screen before doing anything else */
 	display_update();
 
-	start_menu();
+	//start_menu();
 
 	extern Character pacman;
 	pacman.x_pos = 88;

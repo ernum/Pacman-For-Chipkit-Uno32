@@ -52,6 +52,7 @@ extern uint8_t final_matrix[128][32];
 
 extern uint8_t dot_coord_original[104][2];
 extern uint8_t dot_coord_variable[104][2];
+extern uint8_t intersection_coord[38][2];
 
 extern uint8_t temp[512];
 

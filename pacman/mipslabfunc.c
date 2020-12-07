@@ -375,8 +375,171 @@ void reset_score()
   display_board(0, temp);
 }
 
+int check_dir(Character character, int dir) {
+    if (dir == 2 && final_matrix[character.x_pos][character.y_pos + 5] != 1 && character.y_pos < 31
+            && final_matrix[character.x_pos + 1][character.y_pos + 5] != 1
+            && final_matrix[character.x_pos + 2][character.y_pos + 5] != 1
+            && final_matrix[character.x_pos + 3][character.y_pos + 5] != 1
+            && final_matrix[character.x_pos + 4][character.y_pos + 5] != 1) {
+        return 2;
+    }
+    else if (dir == 8 && final_matrix[character.x_pos][character.y_pos - 1] != 1 && character.y_pos > 0
+            && final_matrix[character.x_pos + 1][character.y_pos - 1] != 1
+            && final_matrix[character.x_pos + 2][character.y_pos - 1] != 1
+            && final_matrix[character.x_pos + 3][character.y_pos - 1] != 1
+            && final_matrix[character.x_pos + 4][character.y_pos - 1] != 1) {
+        return 8;
+    }
+    else if (dir == 6 && final_matrix[character.x_pos + 5][character.y_pos] != 1
+            && final_matrix[character.x_pos + 5][character.y_pos + 1] != 1
+            && final_matrix[character.x_pos + 5][character.y_pos + 2] != 1
+            && final_matrix[character.x_pos + 5][character.y_pos + 3] != 1
+            && final_matrix[character.x_pos + 5][character.y_pos + 4] != 1) {
+        return 6;
+    }
+    else if (dir == 4 && final_matrix[character.x_pos - 1][character.y_pos] != 1
+            && final_matrix[character.x_pos - 1][character.y_pos + 1] != 1
+            && final_matrix[character.x_pos - 1][character.y_pos + 2] != 1
+            && final_matrix[character.x_pos - 1][character.y_pos + 3] != 1
+            && final_matrix[character.x_pos - 1][character.y_pos + 4] != 1) {
+        return 4;
+    }
+    else {
+        return 0;
+    }
+}
+/*
+Checks if blinky is in an intersection and calculates it's direction.
+New direction is based on next step closest to pacman.
+*/
+int blinky_dir = 4;
+void intersection_direction() {
+    // Direction priority is Up, Left, Down, Right.
+    // A ghost can't go back the same direction it came from.
+    int i;
+    for (i = 0; i < 38; i++) {
+        if (blinky.x_pos == intersection_coord[i][0] &&
+            blinky.y_pos == intersection_coord[i][1]) {
+                // Up and down are both valid?
+                if (check_dir(blinky, 8) == 8 && check_dir(blinky, 2) == 2 &&
+                    blinky_dir != 2 && blinky_dir != 8) {
+                    if (abs(pacman.y_pos, blinky.y_pos - 1) <=
+                        abs(pacman.y_pos, blinky.y_pos + 1)) {
+                        blinky_dir = 8;
+                    }
+                    else {
+                        blinky_dir = 2;
+                    }
+                }
+                // Up and left are both valid?
+                else if (check_dir(blinky, 8) == 8 && check_dir(blinky, 4) == 4 &&
+                    blinky_dir != 2 && blinky_dir != 6) {
+                    if (abs(pacman.y_pos, blinky.y_pos - 1) <=
+                        abs(pacman.y_pos, blinky.y_pos)) {
+                        blinky_dir = 8;
+                    }
+                    else {
+                        blinky_dir = 4;
+                    }
+                }
+                // Up and right are both valid?
+                else if (check_dir(blinky, 8) == 8 && check_dir(blinky, 6) == 6 &&
+                    blinky_dir != 2 && blinky_dir != 4) {
+                    if (abs(pacman.y_pos, blinky.y_pos - 1) <=
+                        abs(pacman.y_pos, blinky.y_pos)) {
+                        blinky_dir = 8;
+                    }
+                    else {
+                        blinky_dir = 6;
+                    }
+                }
+                // Left and down are both valid?
+                else if (check_dir(blinky, 4) == 4 && check_dir(blinky, 2) == 2 &&
+                    blinky_dir != 6 && blinky_dir != 8) {
+                    if (abs(pacman.x_pos, blinky.x_pos - 1) <=
+                        abs(pacman.x_pos, blinky.x_pos)) {
+                        blinky_dir = 4;
+                    }
+                    else {
+                        blinky_dir = 2;
+                    }
+                }
+                // Left and Right are both valid?
+                else if (check_dir(blinky, 4) == 4 && check_dir(blinky, 6) == 6 &&
+                    blinky_dir != 6 && blinky_dir != 4) {
+                    if (abs(pacman.x_pos, blinky.x_pos - 1) <=
+                        abs(pacman.x_pos, blinky.x_pos + 1)) {
+                        blinky_dir = 4;
+                    }
+                    else {
+                        blinky_dir = 6;
+                    }
+                }
+                // Down and Right are both valid?
+                else if (check_dir(blinky, 2) == 2 && check_dir(blinky, 6) == 6 &&
+                    blinky_dir != 8 && blinky_dir != 4) {
+                    if (abs(pacman.y_pos, blinky.y_pos + 1) <=
+                        abs(pacman.y_pos, blinky.y_pos)) {
+                        blinky_dir = 2;
+                    }
+                    else {
+                        blinky_dir = 6;
+                    }
+                }
+            }
+    }
+}
+/*
+Moves the ghosts. (As of now only implemented for Blinky)
+*/
+void ghosts_move() {
+    // check if in intersection
+    intersection_direction();
+    if (check_dir(blinky, blinky_dir) == 2) {
+        blinky.y_pos ++;
+    }
+    else if (check_dir(blinky, blinky_dir) == 8) {
+        blinky.y_pos --;
+    }
+    else if (check_dir(blinky, blinky_dir) == 6) {
+        blinky.x_pos ++;
+    }
+    else if (check_dir(blinky, blinky_dir) == 4) {
+        blinky.x_pos --;
+    }
+    //try new directions when stuck on wall.
+    else if (check_dir(blinky, 4) == 4 && blinky_dir != 6) {
+        blinky_dir = 4;
+    }
+    else if (check_dir(blinky, 2) == 2 && blinky_dir != 8) {
+        blinky_dir = 2;
+    }
+    else if (check_dir(blinky, 8) == 8 && blinky_dir != 2) {
+        blinky_dir = 8;
+    }
+    else if (check_dir(blinky, 6) == 6 && blinky_dir != 4) {
+        blinky_dir = 6;
+    }
+    else if (blinky.x_pos >= 111) {
+        blinky_dir = 4;
+    }
+    else if (blinky.x_pos <= 1) {
+        blinky_dir = 6;
+    }
+    int i, j;
+    for(i = 0; i < 5; i++) {
+      for(j = 0; j < 5; j++) {
+          final_matrix[blinky.x_pos + i][blinky.y_pos + j] = ghost_blinky[j][i];
+          final_matrix[inky.x_pos + i][inky.y_pos + j] = ghost_inky[j][i];
+          final_matrix[clyde.x_pos + i][clyde.y_pos + j] = ghost_clyde[j][i];
+          final_matrix[pinky.x_pos + i][pinky.y_pos + j] = ghost_pinky[j][i];
+      }
+    }
+}
+
 int score[4];
 int hearts;
+int move_counter = 0;
 void character_add(uint8_t matrix[128][32], int dir) {
     // Ghost collision detection
     if (abs(pacman.x_pos, blinky.x_pos) <= 2 && abs(pacman.y_pos, blinky.y_pos) <= 2 ||
@@ -392,7 +555,6 @@ void character_add(uint8_t matrix[128][32], int dir) {
     }
     // Add characters to board matrix
     int i,j;
-
     for(i = 0; i < 5; i++) {
       for(j = 0; j < 5; j++) {
           if (pacman.x_pos < 0) {
@@ -402,10 +564,11 @@ void character_add(uint8_t matrix[128][32], int dir) {
               pacman.x_pos = 0;
           }
           final_matrix[pacman.x_pos + i][pacman.y_pos + j] = pacman_open_right[j][i];
-          final_matrix[blinky.x_pos + i][blinky.y_pos + j] = ghost_blinky[j][i];
-          final_matrix[inky.x_pos + i][inky.y_pos + j] = ghost_inky[j][i];
-          final_matrix[clyde.x_pos + i][clyde.y_pos + j] = ghost_clyde[j][i];
-          final_matrix[pinky.x_pos + i][pinky.y_pos + j] = ghost_pinky[j][i];
+          if (move_counter == 50) {
+              ghosts_move();
+              move_counter = 0;
+          }
+          move_counter ++;
       }
     }
     // eaten dot detection
@@ -423,35 +586,19 @@ void character_add(uint8_t matrix[128][32], int dir) {
 // Move calculation fo backup direction
 int backup_dir;
 void pacman_move_backup(int dir, uint8_t matrix[128][32]){
-    if (dir == 2 && final_matrix[pacman.x_pos][pacman.y_pos + 5] != 1 && pacman.y_pos < 31
-            && final_matrix[pacman.x_pos + 1][pacman.y_pos + 5] != 1
-            && final_matrix[pacman.x_pos + 2][pacman.y_pos + 5] != 1
-            && final_matrix[pacman.x_pos + 3][pacman.y_pos + 5] != 1
-            && final_matrix[pacman.x_pos + 4][pacman.y_pos + 5] != 1) {
+    if (check_dir(pacman, dir) == 2) {
         pacman.y_pos ++;
         character_add(final_matrix, dir);
     }
-    else if (dir == 8 && final_matrix[pacman.x_pos][pacman.y_pos - 1] != 1 && pacman.y_pos > 0
-            && final_matrix[pacman.x_pos + 1][pacman.y_pos - 1] != 1
-            && final_matrix[pacman.x_pos + 2][pacman.y_pos - 1] != 1
-            && final_matrix[pacman.x_pos + 3][pacman.y_pos - 1] != 1
-            && final_matrix[pacman.x_pos + 4][pacman.y_pos - 1] != 1) {
+    else if (check_dir(pacman, dir) == 8) {
         pacman.y_pos --;
         character_add(final_matrix, dir);
     }
-    else if (dir == 6 && final_matrix[pacman.x_pos + 5][pacman.y_pos] != 1
-            && final_matrix[pacman.x_pos + 5][pacman.y_pos + 1] != 1
-            && final_matrix[pacman.x_pos + 5][pacman.y_pos + 2] != 1
-            && final_matrix[pacman.x_pos + 5][pacman.y_pos + 3] != 1
-            && final_matrix[pacman.x_pos + 5][pacman.y_pos + 4] != 1) {
+    else if (check_dir(pacman, dir) == 6) {
         pacman.x_pos ++;
         character_add(final_matrix, dir);
     }
-    else if (dir == 4 && final_matrix[pacman.x_pos - 1][pacman.y_pos] != 1
-            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 1] != 1
-            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 2] != 1
-            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 3] != 1
-            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 4] != 1) {
+    else if (check_dir(pacman, dir) == 4) {
         pacman.x_pos --;
         character_add(final_matrix, dir);
     }
@@ -463,47 +610,22 @@ void pacman_move_backup(int dir, uint8_t matrix[128][32]){
 Checks direction of pac-man and if he collides with any walls.
 */
 void pacman_move(int dir, uint8_t matrix[128][32]){
-    if (dir == 2 && final_matrix[pacman.x_pos][pacman.y_pos + 5] != 1 && pacman.y_pos < 31
-            && final_matrix[pacman.x_pos + 1][pacman.y_pos + 5] != 1
-            && final_matrix[pacman.x_pos + 2][pacman.y_pos + 5] != 1
-            && final_matrix[pacman.x_pos + 3][pacman.y_pos + 5] != 1
-            && final_matrix[pacman.x_pos + 4][pacman.y_pos + 5] != 1) {
+    if (check_dir(pacman, dir) == 2) {
         backup_dir = dir;
         pacman.y_pos ++;
         character_add(final_matrix, dir);
     }
-    else if (dir == 8 && final_matrix[pacman.x_pos][pacman.y_pos - 1] != 1 && pacman.y_pos > 0
-            && final_matrix[pacman.x_pos + 1][pacman.y_pos - 1] != 1
-            && final_matrix[pacman.x_pos + 2][pacman.y_pos - 1] != 1
-            && final_matrix[pacman.x_pos + 3][pacman.y_pos - 1] != 1
-            && final_matrix[pacman.x_pos + 4][pacman.y_pos - 1] != 1) {
+    else if (check_dir(pacman, dir) == 8) {
         backup_dir = dir;
         pacman.y_pos --;
         character_add(final_matrix, dir);
     }
-    else if (dir == 6 && final_matrix[pacman.x_pos + 5][pacman.y_pos] != 1
-            && final_matrix[pacman.x_pos + 5][pacman.y_pos + 1] != 1
-            && final_matrix[pacman.x_pos + 5][pacman.y_pos + 2] != 1
-            && final_matrix[pacman.x_pos + 5][pacman.y_pos + 3] != 1
-            && final_matrix[pacman.x_pos + 5][pacman.y_pos + 4] != 1) {
+    else if (check_dir(pacman, dir) == 6) {
         backup_dir = dir;
         pacman.x_pos ++;
         character_add(final_matrix, dir);
     }
-    else if (dir == 4 && final_matrix[pacman.x_pos - 1][pacman.y_pos] != 1
-            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 1] != 1
-            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 2] != 1
-            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 3] != 1
-            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 4] != 1) {
-        backup_dir = dir;
-        pacman.x_pos --;
-        character_add(final_matrix, dir);
-    }
-    else if (dir == 4 && final_matrix[pacman.x_pos - 1][pacman.y_pos] != 1
-            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 1] != 1
-            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 2] != 1
-            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 3] != 1
-            && final_matrix[pacman.x_pos - 1][pacman.y_pos + 4] != 1) {
+    else if (check_dir(pacman, dir) == 4) {
         backup_dir = dir;
         pacman.x_pos --;
         character_add(final_matrix, dir);
@@ -515,14 +637,20 @@ void pacman_move(int dir, uint8_t matrix[128][32]){
 
 void paint_out(int dir, uint8_t matrix[128][32]) {
     int i,j;
-    if (dir != -1 && dir != 0) {
+    if (move_counter == 50) {
         for (i = 0; i < 5; i++) {
             for (j = 0; j < 5; j++) {
-              final_matrix[pacman.x_pos + i][pacman.y_pos + j] = 0;
               final_matrix[blinky.x_pos + i][blinky.y_pos + j] = 0;
               final_matrix[inky.x_pos + i][inky.y_pos + j] = 0;
               final_matrix[clyde.x_pos + i][clyde.y_pos + j] = 0;
               final_matrix[pinky.x_pos + i][pinky.y_pos + j] = 0;
+            }
+        }
+    }
+    if (dir != -1 && dir != 0) {
+        for (i = 0; i < 5; i++) {
+            for (j = 0; j < 5; j++) {
+              final_matrix[pacman.x_pos + i][pacman.y_pos + j] = 0;
             }
         }
     }
@@ -612,11 +740,34 @@ void start_menu() {
   }
 }
 
+void character_start_pos(uint8_t final_matrix[128][32]) {
+    pacman.x_pos = 88;
+	pacman.y_pos = 26;
+	blinky.x_pos = 88;
+	blinky.y_pos = 7;
+	inky.x_pos = 87;
+	inky.y_pos = 14;
+	clyde.x_pos = 93;
+	clyde.y_pos = 14;
+	pinky.x_pos = 81;
+	pinky.y_pos = 14;
+    int i, j;
+    for(i = 0; i < 5; i++) {
+      for(j = 0; j < 5; j++) {
+          final_matrix[pacman.x_pos + i][pacman.y_pos + j] = pacman_open_right[j][i];
+          final_matrix[blinky.x_pos + i][blinky.y_pos + j] = ghost_blinky[j][i];
+          final_matrix[inky.x_pos + i][inky.y_pos + j] = ghost_inky[j][i];
+          final_matrix[clyde.x_pos + i][clyde.y_pos + j] = ghost_clyde[j][i];
+          final_matrix[pinky.x_pos + i][pinky.y_pos + j] = ghost_pinky[j][i];
+      }
+    }
+}
+
 void init()
 {
   convert_array_to_matrix((uint8_t*)board, board_matrix);
   convert_array_to_matrix((uint8_t*)board, final_matrix);
-  pacman_move(0, final_matrix);
+  character_start_pos(final_matrix);
   add_dots(final_matrix, dot_coord_original);
   convert_matrix_to_array(final_matrix, temp);
   display_board(0, temp);
