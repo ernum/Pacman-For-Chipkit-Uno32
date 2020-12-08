@@ -29,6 +29,17 @@ Character blinky;
 Character inky;
 Character clyde;
 Character pinky;
+Score score_board[4] = {0};
+
+int score[4] = {0};
+int score_board_val[4] = {0};
+
+int hearts;
+int amount_of_plays = -1;
+
+void init(); // forward declaration
+void decrement_hearts(); // forward declaration
+void character_start_pos(); // forward declaration
 
 /* quicksleep:
    A simple function to create a small delay.
@@ -371,6 +382,10 @@ void reset_score()
     }
   }
 
+  for (i = 0; i < 4; i++) {
+    score[i] = 0;
+  }
+
   convert_matrix_to_array(final_matrix, temp);
   display_board(0, temp);
 }
@@ -532,18 +547,18 @@ void ghosts_move(Character *character) {
     }
 }
 
-int score[4];
-int hearts;
-int move_counter = 0;
+int move_counter;
+int move_speed = 12;
 int dots_eaten = 0;
+int ghost_release_counter = 0;
 void character_add(uint8_t matrix[128][32], int dir) {
     // Ghost collision detection
     if (abs(pacman.x_pos, blinky.x_pos) <= 2 && abs(pacman.y_pos, blinky.y_pos) <= 2 ||
         abs(pacman.x_pos, inky.x_pos) <= 2 && abs(pacman.y_pos, inky.y_pos) <= 2 ||
         abs(pacman.x_pos, clyde.x_pos) <= 2 && abs(pacman.y_pos, clyde.y_pos) <= 2 ||
         abs(pacman.x_pos, pinky.x_pos) <= 2 && abs(pacman.y_pos, pinky.y_pos) <= 2) {
-        pacman.x_pos = 88;
-        pacman.y_pos = 26;
+        move_counter = 0;
+        character_start_pos(final_matrix);
         hearts -= 1;
         test_dir = 0;
         backup_dir = 0;
@@ -551,6 +566,37 @@ void character_add(uint8_t matrix[128][32], int dir) {
     }
     // Add characters to board matrix
     int i,j;
+
+    for (i = 0; i < 5; i++) {
+      if ((IFS(0) & 0xF1FF) >> 8) {
+        if (move_counter == move_speed) {
+            ghosts_move(&blinky);
+            if (ghost_release_counter == 20) {
+                pinky.x_pos = 88;
+                pinky.y_pos = 7;
+                pinky.dir = 4;
+            }
+            ghosts_move(&pinky);
+            if (ghost_release_counter == 30) {
+                inky.x_pos = 88;
+                inky.y_pos = 7;
+                inky.dir = 4;
+            }
+            ghosts_move(&inky);
+            if (ghost_release_counter == 40) {
+                clyde.x_pos = 88;
+                clyde.y_pos = 7;
+                clyde.dir = 4;
+            }
+            ghosts_move(&clyde);
+            move_counter = 0;
+            ghost_release_counter ++;
+        }
+      }
+      move_counter ++;
+
+    }
+
     for(i = 0; i < 5; i++) {
       for(j = 0; j < 5; j++) {
           if (pacman.x_pos < 0) {
@@ -560,35 +606,14 @@ void character_add(uint8_t matrix[128][32], int dir) {
               pacman.x_pos = 0;
           }
           final_matrix[pacman.x_pos + i][pacman.y_pos + j] = pacman_open_right[j][i];
-          if (move_counter == 50) {
-              ghosts_move(&blinky);
-              if (dots_eaten == 10) {
-                  pinky.x_pos = 88;
-                  pinky.y_pos = 7;
-                  pinky.dir = 4;
-              }
-              ghosts_move(&pinky);
-              if (dots_eaten == 20) {
-                  inky.x_pos = 88;
-                  inky.y_pos = 7;
-                  inky.dir = 4;
-              }
-              ghosts_move(&inky);
-              if (dots_eaten == 40) {
-                  clyde.x_pos = 88;
-                  clyde.y_pos = 7;
-                  clyde.dir = 4;
-              }
-              ghosts_move(&clyde);
-              move_counter = 0;
-          }
-          move_counter ++;
           final_matrix[blinky.x_pos + i][blinky.y_pos + j] = ghost_blinky[j][i];
           final_matrix[inky.x_pos + i][inky.y_pos + j] = ghost_inky[j][i];
           final_matrix[clyde.x_pos + i][clyde.y_pos + j] = ghost_clyde[j][i];
           final_matrix[pinky.x_pos + i][pinky.y_pos + j] = ghost_pinky[j][i];
+
       }
     }
+
     // eaten dot detection
     int k;
     for(k = 0; k < 104; k++) {
@@ -656,14 +681,12 @@ void pacman_move(int dir, uint8_t matrix[128][32]){
 
 void paint_out(int dir, uint8_t matrix[128][32]) {
     int i,j;
-    if (move_counter == 50) {
-        for (i = 0; i < 5; i++) {
-            for (j = 0; j < 5; j++) {
-              final_matrix[blinky.x_pos + i][blinky.y_pos + j] = 0;
-              final_matrix[inky.x_pos + i][inky.y_pos + j] = 0;
-              final_matrix[clyde.x_pos + i][clyde.y_pos + j] = 0;
-              final_matrix[pinky.x_pos + i][pinky.y_pos + j] = 0;
-            }
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 5; j++) {
+          final_matrix[blinky.x_pos + i][blinky.y_pos + j] = 0;
+          final_matrix[inky.x_pos + i][inky.y_pos + j] = 0;
+          final_matrix[clyde.x_pos + i][clyde.y_pos + j] = 0;
+          final_matrix[pinky.x_pos + i][pinky.y_pos + j] = 0;
         }
     }
     if (dir != -1 && dir != 0) {
@@ -686,11 +709,263 @@ void add_dots(uint8_t final_matrix[128][32], uint8_t dot_matrix[105][2]) {
     }
 }
 
+void second_start_menu() {
+  int i = 1;
+
+  delay(1);
+
+  int x_start = 46, y_start = 10, scores_vals;
+  uint8_t temp_highscore_matrix[128][32];
+  convert_array_to_matrix(high_score_page, temp_highscore_matrix);
+
+  int i_loop, j_loop;
+  int y_coords[4] = {0, 6, 12, 18};
+
+  for (scores_vals = 0; scores_vals < amount_of_plays + 1; scores_vals++) {
+    for (i_loop = 0; i_loop < 3; i_loop++) {
+      for (j_loop = 0; j_loop < 5; j_loop++) {
+        temp_highscore_matrix[x_start + i_loop][y_start + y_coords[amount_of_plays] + j_loop] = score_board[amount_of_plays].name[0][j_loop][i_loop];
+        temp_highscore_matrix[x_start + 4 + i_loop][y_start + y_coords[amount_of_plays] + j_loop] = score_board[amount_of_plays].name[1][j_loop][i_loop];
+        temp_highscore_matrix[x_start + 8 + i_loop][y_start + y_coords[amount_of_plays] + j_loop] = score_board[amount_of_plays].name[2][j_loop][i_loop];
+
+        temp_highscore_matrix[x_start + 16 + i_loop][y_start + y_coords[amount_of_plays] + j_loop] = score_board[amount_of_plays].score_val[0][j_loop][i_loop];
+        temp_highscore_matrix[x_start + 20 + i_loop][y_start + y_coords[amount_of_plays] + j_loop] = score_board[amount_of_plays].score_val[1][j_loop][i_loop];
+        temp_highscore_matrix[x_start + 24 + i_loop][y_start + y_coords[amount_of_plays] + j_loop] = score_board[amount_of_plays].score_val[2][j_loop][i_loop];
+        temp_highscore_matrix[x_start + 28 + i_loop][y_start + y_coords[amount_of_plays] + j_loop] = score_board[amount_of_plays].score_val[3][j_loop][i_loop];
+      }
+    }
+  }
+
+  convert_matrix_to_array(temp_highscore_matrix, high_score_page);
+  while(1) {
+    if (i == 1) {
+      display_board(0, all_menu_screens[i]);
+      if ((PORTD >> 7) & 0x1 != 0) {
+        /* Select */
+        break;
+      } else if ((PORTF >> 1) & 0x1 != 0) {
+        /* Down */
+        i = 2;
+      }
+    } else if (i == 2) {
+      display_board(0, all_menu_screens[i]);
+      if ((PORTD >> 7) & 0x1 != 0) {
+        /* Select */
+        delay(1);
+        while(1) {
+          display_board(0, high_score_page);
+          if ((PORTD >> 7) & 0x1 != 0) {
+            break;
+          }
+        }
+        display_board(0, all_menu_screens[i]);
+        delay(1);
+      } else if ((PORTD >> 5) & 0x7 != 0) {
+        /* Up */
+        i = 1;
+      }
+    }
+  }
+  test_dir = 0;
+  delay(1);
+}
+
+void game_over_screen_on_display() {
+  int i, j, digit;
+  for (i = 0; i < 3000; i++)  {
+    display_board(0, game_over_screen);
+  }
+
+  display_board(0, high_score_input);
+  uint8_t temp_matrix[128][32];
+  int current_score[4] = {score[3], score[2], score[1], score[0]};
+  int score_x_pos[3] = {55, 75, 95};
+  int letter[3] = {0, 0, 0};
+
+  /* Setup */
+  convert_array_to_matrix(high_score_input, temp_matrix);
+
+  for (digit = 0; digit < 3; digit++) {
+    for (i = 0; i < 3; i++) {
+      for (j = 0; j < 5; j++) {
+        temp_matrix[score_x_pos[digit] + i][22 + j] = alphabet[letter[digit]][j][i];
+      }
+    }
+  }
+
+  convert_matrix_to_array(temp_matrix, high_score_input);
+
+  /* Remaining */
+  while(1) {
+    convert_array_to_matrix(high_score_input, temp_matrix);
+      if ((PORTF >> 1) & 0x1 != 0) {
+        if (letter[2] < 25) {
+          letter[2]++;
+        } else {
+          letter[2] = 0;
+        }
+        for (i = 0; i < 3; i++) {
+          for (j = 0; j < 5; j++) {
+            temp_matrix[score_x_pos[2] + i][22 + j] = alphabet[letter[2]][j][i];
+          }
+        }
+        delay(1);
+      }
+      if ((PORTD >> 5) & 0x7 != 0) {
+        if (letter[1] < 25) {
+          letter[1]++;
+        } else {
+          letter[1] = 0;
+        }
+        for (i = 0; i < 3; i++) {
+          for (j = 0; j < 5; j++) {
+            temp_matrix[score_x_pos[1] + i][22 + j] = alphabet[letter[1]][j][i];
+          }
+        }
+        delay(1);
+      }
+      if ((PORTD >> 6) & 0x3 != 0) {
+        if (letter[0] < 25) {
+          letter[0]++;
+        } else {
+          letter[0] = 0;
+        }
+        for (i = 0; i < 3; i++) {
+          for (j = 0; j < 5; j++) {
+            temp_matrix[score_x_pos[0] + i][22 + j] = alphabet[letter[0]][j][i];
+          }
+        }
+        delay(1);
+      }
+      if ((PORTD >> 7) & 0x1 != 0) {
+        break;
+      }
+    convert_matrix_to_array(temp_matrix, high_score_input);
+    display_board(0, high_score_input);
+  }
+
+  for (digit = 0; digit < 3; digit++) {
+    for (i = 0; i < 3; i++) {
+      for (j = 0; j < 5; j++) {
+        score_board[amount_of_plays].name[digit][j][i] = alphabet[letter[digit]][j][i];
+      }
+    }
+  }
+
+  for (digit = 0; digit < 4; digit++) {
+    for (i = 0; i < 3; i++) {
+      for (j = 0; j < 5; j++) {
+        score_board[amount_of_plays].score_val[digit][j][i] = all_nums[current_score[digit]][j][i];
+      }
+    }
+  }
+  second_start_menu();
+}
+
+void reset_dot_matrix() {
+  int i, j;
+  for (i = 0; i < 104; i++) {
+    for (j = 0; j < 2; j++) {
+      dot_coord_variable[i][j] = dot_coord_original[i][j];
+    }
+  }
+}
+
+void character_start_pos(uint8_t final_matrix[128][32]) {
+    pacman.x_pos = 88;
+    pacman.y_pos = 26;
+    blinky.x_pos = 88;
+    blinky.y_pos = 7;
+    blinky.dir = 4;
+    inky.x_pos = 87;
+    inky.y_pos = 14;
+    inky.dir = 0;
+    clyde.x_pos = 93;
+    clyde.y_pos = 14;
+    clyde.dir = 0;
+    pinky.x_pos = 81;
+    pinky.y_pos = 14;
+    pinky.dir = 0;
+    paint_out(0, final_matrix);
+    ghost_release_counter = 0;
+    move_counter = 0;
+}
+
+void update_hearts() {
+    convert_array_to_matrix((uint8_t*)temp, final_matrix);
+    int ypos[4] = {8, 14, 20, 26};
+    int i,j, amount_of_hearts;
+
+    int remaining = 4 - hearts;
+    for (amount_of_hearts = 0; amount_of_hearts < hearts; amount_of_hearts++) {
+      for(i = 0; i < 5; i++) {
+        for(j = 0; j < 5; j++) {
+            final_matrix[117 + i][ypos[amount_of_hearts] + j] = opaque_heart[j][i]; // matrix is flipped on its axis
+        }
+      }
+    }
+
+    if (remaining != 0) {
+      for (amount_of_hearts = remaining; amount_of_hearts < 4; amount_of_hearts++) {
+        for(i = 0; i < 5; i++) {
+          for(j = 0; j < 5; j++) {
+              final_matrix[117 + i][ypos[amount_of_hearts] + j] = transparent_heart[j][i]; // matrix is flipped on its axis
+          }
+        }
+      }
+    }
+
+    convert_matrix_to_array(final_matrix, temp);
+    display_board(0, temp);
+}
+
+void init()
+{
+  dots_eaten = 0;
+  convert_array_to_matrix((uint8_t*)board, final_matrix);
+  reset_dot_matrix();
+  character_start_pos(final_matrix);
+  add_dots(final_matrix, dot_coord_original);
+  convert_matrix_to_array(final_matrix, temp);
+  display_board(0, temp);
+}
+
+void show_score_and_lives(int dir)
+{
+  /* Level difficulty increas */
+  if (dots_eaten == 104) {
+    if (move_speed != 4) {
+      move_speed = move_speed - 4;
+      dots_eaten = 0;
+    }
+    test_dir = 0;
+    backup_dir = 0;
+    init();
+    update_score(score);
+    update_hearts();
+  } else {
+    convert_array_to_matrix((uint8_t*)temp, final_matrix);
+    decrement_hearts();
+    update_score(score);
+    paint_out(dir, final_matrix);
+    pacman_move(dir, final_matrix);
+    add_dots(final_matrix, dot_coord_variable);
+    convert_matrix_to_array(final_matrix, temp);
+    display_board(0, temp);
+  }
+}
+
 void reset_hearts() {
   convert_array_to_matrix((uint8_t*)temp, final_matrix);
 
   int ypos[4] = {8, 14, 20, 26};
   int i,j,heart;
+
+  if (amount_of_plays != -1) {
+    game_over_screen_on_display();
+    reset_score();
+    init();
+  }
 
   for (heart = 0; heart < 4; heart++) {
     for(i = 0; i < 5; i++) {
@@ -702,12 +977,14 @@ void reset_hearts() {
 
   convert_matrix_to_array(final_matrix, temp);
   display_board(0, temp);
+
+  amount_of_plays++;
   hearts = 4;
 }
 
 void decrement_hearts() {
   if (hearts == 0) {
-    reset_hearts(hearts);
+    reset_hearts();
   } else {
     convert_array_to_matrix((uint8_t*)temp, final_matrix);
     int ypos[4] = {8, 14, 20, 26};
@@ -734,7 +1011,6 @@ void start_menu() {
       break;
     }
   }
-
   i = 1;
   while(1) {
     if (i == 1) {
@@ -750,7 +1026,14 @@ void start_menu() {
       display_board(0, all_menu_screens[i]);
       if ((PORTD >> 7) & 0x1 != 0) {
         /* Select */
-        break;
+        counter = 0;
+        while(1) {
+          display_board(0, no_high_scores_recorded);
+          counter++;
+          if (counter == 3000) {
+            break;
+          }
+        }
       } else if ((PORTD >> 5) & 0x7 != 0) {
         /* Up */
         i = 1;
@@ -759,50 +1042,6 @@ void start_menu() {
   }
 }
 
-void character_start_pos(uint8_t final_matrix[128][32]) {
-    pacman.x_pos = 88;
-	pacman.y_pos = 26;
-	blinky.x_pos = 88;
-	blinky.y_pos = 7;
-	inky.x_pos = 87;
-	inky.y_pos = 14;
-	clyde.x_pos = 93;
-	clyde.y_pos = 14;
-	pinky.x_pos = 81;
-	pinky.y_pos = 14;
-    int i, j;
-    for(i = 0; i < 5; i++) {
-      for(j = 0; j < 5; j++) {
-          final_matrix[pacman.x_pos + i][pacman.y_pos + j] = pacman_open_right[j][i];
-          final_matrix[blinky.x_pos + i][blinky.y_pos + j] = ghost_blinky[j][i];
-          final_matrix[inky.x_pos + i][inky.y_pos + j] = ghost_inky[j][i];
-          final_matrix[clyde.x_pos + i][clyde.y_pos + j] = ghost_clyde[j][i];
-          final_matrix[pinky.x_pos + i][pinky.y_pos + j] = ghost_pinky[j][i];
-      }
-    }
-}
-
-void init()
-{
-  convert_array_to_matrix((uint8_t*)board, board_matrix);
-  convert_array_to_matrix((uint8_t*)board, final_matrix);
-  character_start_pos(final_matrix);
-  add_dots(final_matrix, dot_coord_original);
-  convert_matrix_to_array(final_matrix, temp);
-  display_board(0, temp);
-}
-
-void show_score_and_lives(int dir)
-{
-  convert_array_to_matrix((uint8_t*)temp, final_matrix);
-  decrement_hearts();
-  update_score(score);
-  paint_out(dir, final_matrix);
-  pacman_move(dir, final_matrix);
-  add_dots(final_matrix, dot_coord_variable);
-  convert_matrix_to_array(final_matrix, temp);
-  display_board(0, temp);
-}
 
 void display_update(void)
 {

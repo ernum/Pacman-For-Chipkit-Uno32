@@ -76,6 +76,7 @@ extern int ghost_clyde[5][5];
 extern int ghost_pinky[5][5];
 
 extern int hearts;
+extern int score[4];
 
 extern const uint8_t const opaque_heart[5][5];
 
@@ -89,6 +90,22 @@ typedef struct {
 
 /* Numbers */
 extern const uint8_t const all_nums[10][5][3];
+
+/* High score */
+extern const uint8_t const no_high_scores_recorded[512];
+extern const uint8_t const game_over_screen[512];
+extern const uint8_t const alphabet[26][5][3];
+extern uint8_t high_score_page[512];
+extern uint8_t high_score_input[512];
+extern int amount_of_plays;
+
+typedef struct {
+    uint8_t name[3][5][3];
+    uint8_t score_val[4][5][3];
+}Score;
+
+extern Score score_board[4];
+int move_counter;
 
 /* Declare functions written by students.
    Note: Since we declare these functions here,

@@ -61,11 +61,9 @@ void labinit( void )
   T2CON = (T2CON & 0x7F87) | 0x8078; // Setting the ON bit, the prescaler to 256 and using a 32-bit timer.
   PR2 = 312.5;                       // 80 Mhz / 256 / 10
   IFS(0) = 0;                        // Set event flag to  0.
-
 }
 
 /* This function is called repetitively from the main program */
-//void labwork(int* hearts)
 void labwork()
 {
    /* Get the 8th bit which is the interrupt for timer */
