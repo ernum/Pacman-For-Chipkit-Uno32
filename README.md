@@ -1,35 +1,22 @@
  # Pacman For Chipkit Uno32
 
-This is a fully functioning Tetris clone with scoring, start menu, game over state and menu, sound effects, a game music track, the ability to mute all sound or change the volume and pause functionality. The start menu has start and exit buttons and explains the controlls. The game over menu has exit or restart buttons. In the game you also have a preview of
-the next 4 pieces and increased difficulty based on rows cleared/score. This clone also uses the super rotation system for piece rotation.
+The purpose of this project is to develop the classic "Pacman" game. The objective of the game is to accumulate as many points as possible by eating dots, fruits, and ghosts (whenever the chance arises) as you play as the Pacman character. After the player has accumulated all the dots of a level, they advance to the next level in which the objective is increasingly harder to accomplish.
 
-<img src="pacman/images/pacman.png" width="250">
+## Main Features
 
-## MVP
+* 1 playable Pacman and 4 enemy AI ghosts.
+* Functional menu system for start, level select, highscore.
+* Highscore is saved with three letters inputted by the player. 
+* Functional controls via the chipkits buttons.
+* Classic Pacman game functionality.
 
-* The user can rotate and move shapes.
-* Shapes are falling downwards
-* Shapes land on top of eachother or on the floor
-* All shapes from the classic tetris should be implemented
-* If a row is filled with shapes, the row disappears
-* The game is over if a shape lands such that some part of it is over the game board.
+## Run Commands
+To run the game on your chipkit, use the following commands:
 
-
-## Installation
-This application requires python and pygame.  
-To download python, visit https://www.python.org/downloads/  
-To download pygame, use ```pip install pygame```
-
-**Download:**
-```git clone git@github.com:ernum/tetris-in-python.git```
-
-**Install:**
-```cd tetris-in-python```
-```pip install .```
-
-**Run:**
-```python -m Tetris.src.game```
+    . /opt/mcb32tools/environment
+    make
+    make install TTYDEV=/dev/ttyS4
 
 ## Technologies
-    Python 3
-    Pygame
+    C 
+    MCB32
